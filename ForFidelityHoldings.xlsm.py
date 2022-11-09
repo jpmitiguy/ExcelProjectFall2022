@@ -199,33 +199,26 @@ new_fbgrx_column = "Z2:Z" + str(old_date_new_row)
 print("Pasting new FBGRX prices from 'Final (2)' cells " + new_fbgrx_test_column + " in 'MainSheet' cells " + new_fbgrx_column)
 Worksheet.range(new_fbgrx_column).value = new_fbgrx_test
 
-# new_focpx_test_rows = "D2:D" + str(old_date_new_row)
-# print("D2: D81: " + new_focpx_test_rows)
-# new_focpx_test = Worksheet_Test.range(new_focpx_test_rows)
-# print(new_focpx_test)
+# copy and paste the column of FOCPX prices
+new_focpx_test_column = "D" + latest_row + ":D" + str(old_date_new_row)
+new_focpx_test = Worksheet_Test.range(new_focpx_test_column).options(ndim=2).value
+new_focpx_column = "AC2:AC" + str(old_date_new_row)
+print("Pasting new FOCPX prices from 'Final (2)' cells " + new_focpx_test_column + " in 'MainSheet' cells " + new_focpx_column)
+Worksheet.range(new_focpx_column).value = new_focpx_test
 
-# Worksheet.range("AC2").formula = new_focpx_test
+# copy and paste the column of FNILX prices
+new_fnilx_test_column = "E" + latest_row + ":E" + str(old_date_new_row)
+new_fnilx_test = Worksheet_Test.range(new_fnilx_test_column).options(ndim=2).value
+new_fnilx_column = "AF2:AF" + str(old_date_new_row)
+print("Pasting new FNILX prices from 'Final (2)' cells " + new_fnilx_test_column + " in 'MainSheet' cells " + new_fnilx_column)
+Worksheet.range(new_fnilx_column).value = new_fnilx_test
 
-# new_fnilx_test_rows = "E2:E" + str(old_date_new_row)
-# print("E2: E81: " + new_fnilx_test_rows)
-# new_fnilx_test = Worksheet_Test.range(new_fnilx_test_rows)
-# print(new_fnilx_test)
-
-# Worksheet.range("AF2").formula = new_fnilx_test
-
-# new_focpx_test_rows = "D2:D" + str(old_date_new_row)
-# print("D2: D81: " + new_focpx_test_rows)
-# new_focpx_test = Worksheet_Test.range(new_focpx_test_rows)
-# print(new_focpx_test)
-
-# Worksheet.range("AC2").formula = new_focpx_test
-
-# new_focpx_test_rows = "D2:D" + str(old_date_new_row)
-# print("D2: D81: " + new_focpx_test_rows)
-# new_focpx_test = Worksheet_Test.range(new_focpx_test_rows)
-# print(new_focpx_test)
-
-# Worksheet.range("AC2").formula = new_focpx_test
+# copy and paste the column of FNILX prices
+new_fnilx_test_column = "E" + latest_row + ":E" + str(old_date_new_row)
+new_fnilx_test = Worksheet_Test.range(new_fnilx_test_column).options(ndim=2).value
+new_fnilx_column = "AF2:AF" + str(old_date_new_row)
+print("Pasting new FNILX prices from 'Final (2)' cells " + new_fnilx_test_column + " in 'MainSheet' cells " + new_fnilx_column)
+Worksheet.range(new_fnilx_column).value = new_fnilx_test
 
 
 
