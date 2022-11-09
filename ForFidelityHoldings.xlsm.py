@@ -5,8 +5,16 @@
 import xlwings
 from time import sleep
 from datetime import date
+import ForTestxlsxFile
+
+# From ForTestxlsxFile, run function that downloads most recent stock prices
+ForTestxlsxFile.update_file()
+
+# sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
+sleep(3)
 
 ############# Load xlwings ##################
+print("xlwings_____________________________________")
 
 # Load workbook
 print("Loading workbook...")
