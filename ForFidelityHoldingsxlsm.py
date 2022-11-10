@@ -45,16 +45,16 @@ while searching == True:
             break
 
 # Add recent activities
-num_add = int(input("How many activity additions would you like to input? "))
+num_add = int(("How many activity additions would you like to input? "))
 for n in range(num_add):
     trade_date = input("Trade Date (if any) mm/dd/yy: ")
-    settlement_date = input("Settlement Date mm/dd/yy: ")
+    settlement_date = input("* Settlement Date mm/dd/yy: ")
     description = input("Enter activity description (e.g., You Sold Transaction Profit: $3.25): ")
-    quantity = input("Enter Quantity (negative for sold): ")
+    quantity = input("* Enter Quantity (negative for sold): ")
     price = input("Enter price: ")
     cost = input("Enter cost (if any): ")
     transaction_cost = input("Enter transaction cost (if any): ")
-    amount = input("Enter amount (negative for buy): ")
+    amount = input("* Enter amount (negative for buy): ")
     # if ref. num. exists, fill in other values automatically
     ref_num = input("Enter reference number (if any): ")
     if ref_num != "":
