@@ -12,21 +12,26 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Python 3.x, Pygame, etc.
 * Requires Python installation. Version 3.10 recommended
 * Requires xlwings library
-* Requires Excel file with the bare bones of account information
+* Requires Excel files. (1) Up-to-date stock/mutual fund information (2) Bare bones of account information
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* Download ForFidelityHoldingsxlsm.py and ForTestxlsxFile.py files to the same folder
+* Change line 23 of ForTestxlsxFile.py to call the Excel File with stock/mutual fund prices
+```
+Workbook = File.Workbooks.Open("[File Path]")
+```
+* Change line 21 of ForFidelityHoldingsxlsm.py to call the Excel file with account information
+```
+Workbook = xlwings.Book("[File Path]")
+```
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
+* Run ForFidelityHoldingsxlsm.py
+* Enter number of activities
 ```
 code blocks for commands
 ```
@@ -55,7 +60,7 @@ ex. email@email.org
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the [NAME HERE] License - see the LICENSE file for details
 
 ## Acknowledgments
 
