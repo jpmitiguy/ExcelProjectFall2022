@@ -14,22 +14,24 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 
 * Requires Python installation. Version 3.10 recommended
 * Requires xlwings library
+* Requires time & datetime libraries (generally pre-installed with Python installation)
 * Requires Excel files
     1. Excel file with up-to-date stock/mutual fund information
     2. Excel file with bare bones of account information
 
 ### Installing
 
-1. Download ForFidelityHoldingsxlsm.py and ForTestxlsxFile.py files to the same folder
-2. Change line 23 of ForTestxlsxFile.py to call the Excel File with stock/mutual fund prices (see example below)
+1. Install xlwings
+2. Download ForFidelityHoldingsxlsm.py and ForTestxlsxFile.py files to the same folder
+3. Change line 23 of ForTestxlsxFile.py to call the Excel File with stock/mutual fund prices (see example below)
     ```
     Workbook = File.Workbooks.Open("C:/Users/Joe/Investments/AccountInfo.xlsm")
     ```
-3. Change line 21 of ForFidelityHoldingsxlsm.py to call the Excel file with account information (see example below)
+4. Change line 21 of ForFidelityHoldingsxlsm.py to call the Excel file with account information (see example below)
     ```
     Workbook = xlwings.Book("C:/Users/Joe/Investments/StockAndMutualFundPrices.xlsm")
     ```
-4. Create Excel macro in file with account information (copy and paste code below)
+5. Create Excel macro in file with account information (copy and paste code below)
     ```
         
     Sub DeleteExtraAtSymbol()
