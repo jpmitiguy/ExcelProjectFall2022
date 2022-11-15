@@ -1,5 +1,6 @@
 # https://docs.xlwings.org/en/latest/api.html
 # https://www.geeksforgeeks.org/working-with-excel-files-in-python-using-xlwings/
+# https://www.w3schools.com/python/python_try_except.asp
 
 # Importing the pywin32 module
 import xlwings
@@ -8,7 +9,13 @@ from datetime import date
 import ForTestxlsxFile
 
 # From ForTestxlsxFile, run function that downloads most recent stock prices
-ForTestxlsxFile.update_file()
+try:
+    ForTestxlsxFile.update_file()
+except IndentationError:
+    print("Encountered an Indentation Error.")
+except:
+    print("Encountered unknown erorr.")
+
 
 # sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
 sleep(3)
