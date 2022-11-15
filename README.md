@@ -2,7 +2,7 @@
 
 # Excel Stock Project
 
-Creating a robust, concise, simple way to deal with stock and mutual fund activity
+Creating a robust, concise, simple way to manage updated stock and mutual fund activity
 
 ## Description
 

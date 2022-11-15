@@ -47,7 +47,7 @@ def update_file():
     # creates new date that fits the excel date data type
     new_today_date = str(today_date) + str(" 00:00:00+00:00")
 
-    # compares the excel data in A2, (2, 1) in its language, with today's date
+    # compares the excel data in A2, (2, 1) in its syntax, with today's date
     if str(Worksheet.Cells(2, 1).Value) == new_today_date:
         print("Appears to have worked!")
         # Saves the workbook

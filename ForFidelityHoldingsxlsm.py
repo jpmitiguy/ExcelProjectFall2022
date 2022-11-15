@@ -1,12 +1,28 @@
-# https://docs.xlwings.org/en/latest/api.html
-# https://www.geeksforgeeks.org/working-with-excel-files-in-python-using-xlwings/
-# https://www.w3schools.com/python/python_try_except.asp
+'''
+My final project is to create a robust, concise, simple way to manage updated stock and mutual fund activity
+'''
 
-# Importing the pywin32 module
+'''
+Sources:
+I used https://docs.xlwings.org/en/latest/api.html to examine the full documentaion of xlwings library
+I sued https://www.geeksforgeeks.org/working-with-excel-files-in-python-using-xlwings/ to understand the basics of using Excel with xlwings
+I used https://www.w3schools.com/python/python_try_except.asp to learn use try & except 
+'''
+
+
+# Import download libraries
 import xlwings
+# Import built-in libraries
 from time import sleep
 from datetime import date
+# Import created module
 import ForTestxlsxFile
+
+# global variables
+
+# utility functions
+
+# classes
 
 # From ForTestxlsxFile, run function that downloads most recent stock prices
 try:
