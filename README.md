@@ -22,12 +22,12 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 ### Installing
 
 1. Install xlwings
-2. Download ForFidelityHoldingsxlsm.py and ForTestxlsxFile.py files to the same folder
+2. Download main.py and ForTestxlsxFile.py files to the same folder
 3. Change line 23 of ForTestxlsxFile.py to call the Excel File with stock/mutual fund prices (see example below)
     ```
     Workbook = File.Workbooks.Open("C:/Users/Joe/Investments/AccountInfo.xlsm")
     ```
-4. Change line 21 of ForFidelityHoldingsxlsm.py to call the Excel file with account information (see example below)
+4. Change line 21 of main.py to call the Excel file with account information (see example below)
     ```
     Workbook = xlwings.Book("C:/Users/Joe/Investments/StockAndMutualFundPrices.xlsm")
     ```
@@ -53,7 +53,7 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 ### Executing program
 
 * Ensure internet connection for up-to-date information (not required)
-* Run ForFidelityHoldingsxlsm.py
+* Run main.py
 * Enter number of activities when prompted (see example below)
     ```
     How many activity additions would you like to input? 3
