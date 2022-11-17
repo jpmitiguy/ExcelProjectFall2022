@@ -16,7 +16,7 @@ import xlwings
 from time import sleep
 from datetime import date
 # Import created module
-import ForTestxlsxFile
+import StockInfo
 
 # global variables
 
@@ -24,9 +24,9 @@ import ForTestxlsxFile
 
 # classes
 
-# From ForTestxlsxFile, run function that downloads most recent stock prices
+# From StockInfo, run function that downloads most recent stock prices
 try:
-    ForTestxlsxFile.update_file()
+    StockInfo.update_file()
 except IndentationError:
     print("Encountered an Indentation Error.")
 except:

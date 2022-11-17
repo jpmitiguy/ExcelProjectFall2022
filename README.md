@@ -22,8 +22,8 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 ### Installing
 
 1. Install xlwings
-2. Download main.py and ForTestxlsxFile.py files to the same folder
-3. Change line 23 of ForTestxlsxFile.py to call the Excel File with stock/mutual fund prices (see example below)
+2. Download main.py and StockInfo.py files to the same folder
+3. Change line 23 of StockInfo.py to call the Excel File with stock/mutual fund prices (see example below)
     ```
     Workbook = File.Workbooks.Open("C:/Users/Joe/Investments/AccountInfo.xlsm")
     ```
