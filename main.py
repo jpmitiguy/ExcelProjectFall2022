@@ -25,12 +25,12 @@ import StockInfo
 # classes
 
 # From StockInfo, run function that downloads most recent stock prices
-try:
-    StockInfo.update_file()
-except IndentationError:
-    print("Encountered an Indentation Error.")
-except:
-    print("Encountered unknown error.")
+# try:
+#     StockInfo.update_file()
+# except IndentationError:
+#     print("Encountered an Indentation Error.")
+# except:
+#     print("Encountered unknown error.")
 
 
 # sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
@@ -68,7 +68,7 @@ while searching == True:
             break
 
 # Add recent activities
-num_add = int(("How many activity additions would you like to input? "))
+num_add = int(input("How many activity additions would you like to input? "))
 for n in range(num_add):
     trade_date = input("Trade Date (if any) mm/dd/yy: ")
     settlement_date = input("* Settlement Date mm/dd/yy: ")
