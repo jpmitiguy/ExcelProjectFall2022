@@ -41,7 +41,7 @@ print("xlwings_____________________________________")
 
 # Load workbook
 print("Loading workbook...")
-Workbook = xlwings.Book("C:/Users/JP.Mitiguy23/Mitiguy/FidelityHoldingsForTest.xlsm")
+Workbook = xlwings.Book("../FidelityHoldingsProject.xlsm")
 
 # Finds active sheet in workbook
 print("Pulling up Main Sheet...")
@@ -236,13 +236,6 @@ new_focpx_test = Worksheet_Test.range(new_focpx_test_column).options(ndim=2).val
 new_focpx_column = "AC2:AC" + str(old_date_new_row)
 print("Pasting new FOCPX prices from 'Final (2)' cells " + new_focpx_test_column + " in 'MainSheet' cells " + new_focpx_column)
 Worksheet.range(new_focpx_column).value = new_focpx_test
-
-# copy and paste the column of FNILX prices
-new_fnilx_test_column = "E" + latest_row + ":E" + str(old_date_new_row)
-new_fnilx_test = Worksheet_Test.range(new_fnilx_test_column).options(ndim=2).value
-new_fnilx_column = "AF2:AF" + str(old_date_new_row)
-print("Pasting new FNILX prices from 'Final (2)' cells " + new_fnilx_test_column + " in 'MainSheet' cells " + new_fnilx_column)
-Worksheet.range(new_fnilx_column).value = new_fnilx_test
 
 # copy and paste the column of FNILX prices
 new_fnilx_test_column = "E" + latest_row + ":E" + str(old_date_new_row)
