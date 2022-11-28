@@ -55,6 +55,7 @@ Workbook.api.RefreshAll()
 
 # Find blank row
 print("Finding blank row...")
+# variable holds list of values in the E column of the main worksheet
 e = Worksheet.range("E:E").value
 searching = True
 while searching == True:
@@ -244,7 +245,25 @@ new_fnilx_column = "AF2:AF" + str(old_date_new_row)
 print("Pasting new FNILX prices from 'Final (2)' cells " + new_fnilx_test_column + " in 'MainSheet' cells " + new_fnilx_column)
 Worksheet.range(new_fnilx_column).value = new_fnilx_test
 
+# Determine which rows to update the table based on new activities
+for i in range(num_add):
+    running_2 = True
+    while running_2:
+
+        row = blank_row + i
+        print("Settlement date of " + str(row) + ":")
+        new_settlement_date = Worksheet.range("B" + str(row)).value
+        print(new_settlement_date)
+
+        print("Row to edit:")
+        v = Worksheet.range("V:V").value
+        for d in range(old_date_new_row + 50):
+            table_date = v[d]
+            if table_date == settlement_date:
+                row_to_edit = d + 1
+                print(row_to_edit)
+                running_2 = False
+            
 
 
-
-# Update lines Y, AB, AE, AH, AK, AN
+# Update lines Y, AB, AE, AH, AK, ANx``
