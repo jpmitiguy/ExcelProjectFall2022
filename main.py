@@ -54,7 +54,7 @@ Workbook.api.RefreshAll()
 ################ NEW ACTIVITY ###################
 
 # Find blank row
-print("Finding blank row...")
+print("Finding blank row: ")
 # variable holds list of values in the E column of the main worksheet
 e = Worksheet.range("E:E").value
 searching = True
@@ -71,6 +71,7 @@ while searching == True:
 # Add recent activities
 num_add = int(input("How many activity additions would you like to input? "))
 for n in range(num_add):
+    print("__________Activity #" + str(n + 1) + "__________")
     trade_date = input("Trade Date (if any) mm/dd/yy: ")
     settlement_date = input("* Settlement Date mm/dd/yy: ")
     description = input("* Enter activity description (e.g., You Sold Transaction Profit: $3.25): ")
@@ -208,6 +209,9 @@ print("Running macro to delete extra '@' symbol...")
 DeleteExtraAtSymbolMacro = Workbook.macro("DeleteExtraAtSymbol")
 DeleteExtraAtSymbolMacro()
 
+# Update lines Y, AB, AE, AH, AK, AN
+
+
 # BRING RECENT STOCK DATA INTO WORKSHEET
 
 # copy and paste the column of dates
@@ -255,59 +259,59 @@ latest_activity_row = blank_row + num_add - 1
 
 # Update FNCMX shares column to fit latest activities
 latest_shares_fncmx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$2))"
+print("Updating new FNCMX shares from Activity List in cells X2:X" + str(old_date_new_row - 1))
 for xc in range(old_date_new_row - 2):
     latest_shares_fncmx_cell = "X" + str(xc + 2)
     Worksheet.range(latest_shares_fncmx_cell).formula = latest_shares_fncmx
-print("Updating new FNCMX shares from Activity List in cells X2:" + latest_shares_fncmx_cell)
 
 # Update FBGRX shares column to fit latest activities
 latest_shares_fbgrx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$3))"
+print("Updating new FBGRX shares from Activity List in cells AA2:AA" + str(old_date_new_row - 1))
 for aac in range(old_date_new_row - 2):
     latest_shares_fbgrx_cell = "AA" + str(aac + 2)
     Worksheet.range(latest_shares_fbgrx_cell).formula = latest_shares_fbgrx
-print("Updating new FBGRX shares from Activity List in cells AA2:" + latest_shares_fbgrx_cell)
 
 # Update FOCPX shares column to fit latest activities
 latest_shares_focpx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$4))"
+print("Updating new FOCPX shares from Activity List in cells AD2:AD" + str(old_date_new_row - 1))
 for adc in range(old_date_new_row - 2):
     latest_shares_focpx_cell = "AD" + str(adc + 2)
     Worksheet.range(latest_shares_focpx_cell).formula = latest_shares_focpx
-print("Updating new FOCPX shares from Activity List in cells AD2:" + latest_shares_focpx_cell)
 
 # Update FNILX shares column to fit latest activities
 latest_shares_fnilx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$5))"
+print("Updating new FNILX shares from Activity List in cells AG2:AG" + str(old_date_new_row - 1))
 for agc in range(old_date_new_row - 2):
     latest_shares_fnilx_cell = "AG" + str(agc + 2)
     Worksheet.range(latest_shares_fnilx_cell).formula = latest_shares_fnilx
-print("Updating new FNILX shares from Activity List in cells AG2:" + latest_shares_fnilx_cell)
 
 # Update FLCEX shares column to fit latest activities
 latest_shares_flcex = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$6))"
+print("Updating new FLCEX shares from Activity List in cells AJ2:AJ" + str(old_date_new_row - 1))
 for ajc in range(old_date_new_row - 2):
     latest_shares_flcex_cell = "AJ" + str(ajc + 2)
     Worksheet.range(latest_shares_flcex_cell).formula = latest_shares_flcex
-print("Updating new FLCEX shares from Activity List in cells AJ2:" + latest_shares_flcex_cell)
 
 # Update FFGCX shares column to fit latest activities
 latest_shares_ffgcx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$8))"
+print("Updating new FFGCX shares from Activity List in cells AM2:AM" + str(old_date_new_row - 1))
 for amc in range(old_date_new_row - 2):
     latest_shares_ffgcx_cell = "AM" + str(amc + 2)
     Worksheet.range(latest_shares_ffgcx_cell).formula = latest_shares_ffgcx
-print("Updating new FFGCX shares from Activity List in cells AM2:" + latest_shares_ffgcx_cell)
 
 # Update SPAXX value column to fit latest activities
 latest_spaxx_total = "=SUM(J2:J" + str(latest_activity_row) + ")"
+print("Updating new SPAXX value from Activity List in cells AO2:AO" + str(old_date_new_row - 1))
 for aoc in range(old_date_new_row - 2):
     latest_spaxx_total_cell = "AO" + str(aoc + 2)
     Worksheet.range(latest_spaxx_total_cell).formula = latest_spaxx_total
-print("Updating new SPAXX value from Activity List in cells AO:2" + latest_spaxx_total_cell)
 
 # Update Investment Increase column to fit latest activities
 latest_investment_increase = "=OFFSET([@[Investment Increase]],0,-1)-SUM($J$2:$J$" + str(latest_activity_row) + "*($E$2:$E$" + str(latest_activity_row) + "=$Q$31))"
+print("Updating investment increase from Activity List in cells AQ2:AQ" + str(old_date_new_row - 1))
 for aqc in range(old_date_new_row - 2):
     latest_investment_increase_cell = "AQ" + str(aqc + 2)
     Worksheet.range(latest_investment_increase_cell).formula = latest_investment_increase
-print("Updating investment increase from Activity List in cells AQ:" + latest_investment_increase_cell)
 
     
 # use macro to delete extra at symbol that has been created from copying & pasting formulas
@@ -317,30 +321,32 @@ DeleteExtraAtSymbolMacro()
 
 
 
-# # Determine which rows to update the table based on new activities
-# for a in range(num_add):
-#     print(a)
+# Determine which rows to update the table based on new activities
+for a in range(num_add):
+    print(a)
 
-#     running_2 = True
-#     while running_2 == True:
+    running_2 = True
+    while running_2 == True:
 
-#         row = blank_row + a
-#         print("Settlement date of " + str(row) + ":")
-#         new_settlement_date = Worksheet.range("B" + str(row)).value
-#         print(new_settlement_date)
+        row = blank_row + a
+        print("Settlement date of " + str(row) + ":")
+        new_settlement_date = Worksheet.range("B" + str(row)).value
+        print(new_settlement_date)
 
-#         print("Row to edit:")
-#         v = Worksheet.range("V:V").value
-#         for d in range(old_date_new_row + 50):
-#             table_date = v[d]
-#             print(table_date)
-#             row_to_edit = d + 1
-#             print(row_to_edit)
-#             if table_date == settlement_date:
-#                 running_2 = False
-#             if table_date != settlement_date:
-#                 running_2 = False
+        print("Row to edit:")
+        v = Worksheet.range("V:V").value
+        for d in range(old_date_new_row + 50):
+            table_date = v[d + 1]
+            print(table_date)
+            print(new_settlement_date)
+            if table_date == new_settlement_date:
+                row_to_edit = d + 1
+                print(row_to_edit)
+                print("Yay!!")
+                running_2 = False
+            if table_date != new_settlement_date:
+                print("Try again...")
+                running_2 = False
             
 
 
-# Update lines Y, AB, AE, AH, AK, AN
