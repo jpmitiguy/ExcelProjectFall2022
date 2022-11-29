@@ -7,6 +7,7 @@ Sources:
 I used https://docs.xlwings.org/en/latest/api.html to examine the full documentaion of xlwings library
 I sued https://www.geeksforgeeks.org/working-with-excel-files-in-python-using-xlwings/ to understand the basics of using Excel with xlwings
 I used https://www.w3schools.com/python/python_try_except.asp to learn use try & except 
+I used https://www.geeksforgeeks.org/python-reversing-list/#:~:text=Using%20reversed()%20we%20can,to%20reverse%20list%20in%2Dplace. to reverse lists
 '''
 
 
@@ -255,98 +256,172 @@ Worksheet.range(new_fnilx_column).value = new_fnilx_test
 # UPDATE TABLE ROWS BASED ON ACTIVIIES
 
 # Update Shares of Mutual Funds/Stocks, SPAXX total, and Investment Increase
-latest_activity_row = blank_row + num_add - 1
 
-# Update FNCMX shares column to fit latest activities
-latest_shares_fncmx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$2))"
-print("Updating new FNCMX shares from Activity List in cells X2:X" + str(old_date_new_row - 1))
-for xc in range(old_date_new_row - 2):
-    latest_shares_fncmx_cell = "X" + str(xc + 2)
-    Worksheet.range(latest_shares_fncmx_cell).formula = latest_shares_fncmx
 
-# Update FBGRX shares column to fit latest activities
-latest_shares_fbgrx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$3))"
-print("Updating new FBGRX shares from Activity List in cells AA2:AA" + str(old_date_new_row - 1))
-for aac in range(old_date_new_row - 2):
-    latest_shares_fbgrx_cell = "AA" + str(aac + 2)
-    Worksheet.range(latest_shares_fbgrx_cell).formula = latest_shares_fbgrx
+# # Update FNCMX shares column to fit latest activities
+# latest_shares_fncmx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$2))"
+# print("Updating new FNCMX shares from Activity List in cells X2:X" + str(old_date_new_row - 1))
+# for xc in range(old_date_new_row - 2):
+#     latest_shares_fncmx_cell = "X" + str(xc + 2)
+#     Worksheet.range(latest_shares_fncmx_cell).formula = latest_shares_fncmx
 
-# Update FOCPX shares column to fit latest activities
-latest_shares_focpx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$4))"
-print("Updating new FOCPX shares from Activity List in cells AD2:AD" + str(old_date_new_row - 1))
-for adc in range(old_date_new_row - 2):
-    latest_shares_focpx_cell = "AD" + str(adc + 2)
-    Worksheet.range(latest_shares_focpx_cell).formula = latest_shares_focpx
+# # Update FBGRX shares column to fit latest activities
+# latest_shares_fbgrx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$3))"
+# print("Updating new FBGRX shares from Activity List in cells AA2:AA" + str(old_date_new_row - 1))
+# for aac in range(old_date_new_row - 2):
+#     latest_shares_fbgrx_cell = "AA" + str(aac + 2)
+#     Worksheet.range(latest_shares_fbgrx_cell).formula = latest_shares_fbgrx
 
-# Update FNILX shares column to fit latest activities
-latest_shares_fnilx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$5))"
-print("Updating new FNILX shares from Activity List in cells AG2:AG" + str(old_date_new_row - 1))
-for agc in range(old_date_new_row - 2):
-    latest_shares_fnilx_cell = "AG" + str(agc + 2)
-    Worksheet.range(latest_shares_fnilx_cell).formula = latest_shares_fnilx
+# # Update FOCPX shares column to fit latest activities
+# latest_shares_focpx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$4))"
+# print("Updating new FOCPX shares from Activity List in cells AD2:AD" + str(old_date_new_row - 1))
+# for adc in range(old_date_new_row - 2):
+#     latest_shares_focpx_cell = "AD" + str(adc + 2)
+#     Worksheet.range(latest_shares_focpx_cell).formula = latest_shares_focpx
 
-# Update FLCEX shares column to fit latest activities
-latest_shares_flcex = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$6))"
-print("Updating new FLCEX shares from Activity List in cells AJ2:AJ" + str(old_date_new_row - 1))
-for ajc in range(old_date_new_row - 2):
-    latest_shares_flcex_cell = "AJ" + str(ajc + 2)
-    Worksheet.range(latest_shares_flcex_cell).formula = latest_shares_flcex
+# # Update FNILX shares column to fit latest activities
+# latest_shares_fnilx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$5))"
+# print("Updating new FNILX shares from Activity List in cells AG2:AG" + str(old_date_new_row - 1))
+# for agc in range(old_date_new_row - 2):
+#     latest_shares_fnilx_cell = "AG" + str(agc + 2)
+#     Worksheet.range(latest_shares_fnilx_cell).formula = latest_shares_fnilx
 
-# Update FFGCX shares column to fit latest activities
-latest_shares_ffgcx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$8))"
-print("Updating new FFGCX shares from Activity List in cells AM2:AM" + str(old_date_new_row - 1))
-for amc in range(old_date_new_row - 2):
-    latest_shares_ffgcx_cell = "AM" + str(amc + 2)
-    Worksheet.range(latest_shares_ffgcx_cell).formula = latest_shares_ffgcx
+# # Update FLCEX shares column to fit latest activities
+# latest_shares_flcex = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$6))"
+# print("Updating new FLCEX shares from Activity List in cells AJ2:AJ" + str(old_date_new_row - 1))
+# for ajc in range(old_date_new_row - 2):
+#     latest_shares_flcex_cell = "AJ" + str(ajc + 2)
+#     Worksheet.range(latest_shares_flcex_cell).formula = latest_shares_flcex
 
-# Update SPAXX value column to fit latest activities
-latest_spaxx_total = "=SUM(J2:J" + str(latest_activity_row) + ")"
-print("Updating new SPAXX value from Activity List in cells AO2:AO" + str(old_date_new_row - 1))
-for aoc in range(old_date_new_row - 2):
-    latest_spaxx_total_cell = "AO" + str(aoc + 2)
-    Worksheet.range(latest_spaxx_total_cell).formula = latest_spaxx_total
+# # Update FFGCX shares column to fit latest activities
+# latest_shares_ffgcx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$8))"
+# print("Updating new FFGCX shares from Activity List in cells AM2:AM" + str(old_date_new_row - 1))
+# for amc in range(old_date_new_row - 2):
+#     latest_shares_ffgcx_cell = "AM" + str(amc + 2)
+#     Worksheet.range(latest_shares_ffgcx_cell).formula = latest_shares_ffgcx
 
-# Update Investment Increase column to fit latest activities
-latest_investment_increase = "=OFFSET([@[Investment Increase]],0,-1)-SUM($J$2:$J$" + str(latest_activity_row) + "*($E$2:$E$" + str(latest_activity_row) + "=$Q$31))"
-print("Updating investment increase from Activity List in cells AQ2:AQ" + str(old_date_new_row - 1))
-for aqc in range(old_date_new_row - 2):
-    latest_investment_increase_cell = "AQ" + str(aqc + 2)
-    Worksheet.range(latest_investment_increase_cell).formula = latest_investment_increase
+# # Update SPAXX value column to fit latest activities
+# latest_spaxx_total = "=SUM(J2:J" + str(latest_activity_row) + ")"
+# print("Updating new SPAXX value from Activity List in cells AO2:AO" + str(old_date_new_row - 1))
+# for aoc in range(old_date_new_row - 2):
+#     latest_spaxx_total_cell = "AO" + str(aoc + 2)
+#     Worksheet.range(latest_spaxx_total_cell).formula = latest_spaxx_total
+
+# # Update Investment Increase column to fit latest activities
+# latest_investment_increase = "=OFFSET([@[Investment Increase]],0,-1)-SUM($J$2:$J$" + str(latest_activity_row) + "*($E$2:$E$" + str(latest_activity_row) + "=$Q$31))"
+# print("Updating investment increase from Activity List in cells AQ2:AQ" + str(old_date_new_row - 1))
+# for aqc in range(old_date_new_row - 2):
+#     latest_investment_increase_cell = "AQ" + str(aqc + 2)
+#     Worksheet.range(latest_investment_increase_cell).formula = latest_investment_increase
+
 
     
+# function updates table share, SPAXX, and Investment Increase formulas to be equal to formula below it
+def table_activity_update_by_row(row_to_edit):
+    # Update FNCMX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("X" + str(row_to_edit + 1)).formula
+    Worksheet.range("X" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FBGRX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AA" + str(row_to_edit + 1)).formula
+    Worksheet.range("AA" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FOCPX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AD" + str(row_to_edit + 1)).formula
+    Worksheet.range("AD" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FNILX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AG" + str(row_to_edit + 1)).formula
+    Worksheet.range("AG" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FLCEX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AJ" + str(row_to_edit + 1)).formula
+    Worksheet.range("AJ" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FFGCX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AM" + str(row_to_edit + 1)).formula
+    Worksheet.range("AM" + str(row_to_edit)).formula = table_row_below_formula
+    # Update SPAXX values column to fit latest activities
+    table_row_below_formula = Worksheet.range("AO" + str(row_to_edit + 1)).formula
+    Worksheet.range("AO" + str(row_to_edit)).formula = table_row_below_formula
+    # Update Investment Increase column to fit latest activities
+    table_row_below_formula = Worksheet.range("AQ" + str(row_to_edit + 1)).formula
+    Worksheet.range("AQ" + str(row_to_edit)).formula = table_row_below_formula
+
+# Determine which rows to update the table based on new activities
+latest_activity_row = blank_row + num_add - 1
+for a in range(num_add):
+    print(a)
+    row = blank_row + a
+    print("Settlement date of " + str(row) + ":")
+    new_settlement_date = Worksheet.range("B" + str(row)).value
+    print(new_settlement_date)
+    v = Worksheet.range("V2:V" + str(old_date_new_row + 40)).value
+    # reverse() reverses the order of a list
+    v.reverse()
+    for d in range(len(v)):
+        table_date = v[d]
+        print(table_date)
+        print("Table row to edit:")
+        table_row_to_edit = old_date_new_row + 40 - d
+        print(table_row_to_edit)
+        if table_date == new_settlement_date:
+            global iterate_set_point
+            iterate_set_point = d
+            in_table_activity_row = str(latest_activity_row - (num_add - (a + 1)))
+
+            # Update FNCMX shares column to fit latest activities
+            latest_shares_fncmx = "=SUM($F$2:$F$" + in_table_activity_row + "*($C$2:$C$" + in_table_activity_row + "=$Q$2))"
+            print("Updating new FNCMX shares from Activity List in cell X" + str(table_row_to_edit))
+            Worksheet.range("X" + str(table_row_to_edit)).formula = latest_shares_fncmx
+
+            # Update FBGRX shares column to fit latest activities
+            latest_shares_fbgrx = "=SUM($F$2:$F$" + in_table_activity_row + "*($C$2:$C$" + in_table_activity_row + "=$Q$3))"
+            print("Updating new FBGRX shares from Activity List in cell AA" + str(table_row_to_edit))
+            Worksheet.range("AA" + str(table_row_to_edit)).formula = latest_shares_fbgrx
+
+            # Update FOCPX shares column to fit latest activities
+            latest_shares_focpx = "=SUM($F$2:$F$" +in_table_activity_row + "*($C$2:$C$" +in_table_activity_row + "=$Q$4))"
+            print("Updating new FOCPX shares from Activity List in cell AD" + str(table_row_to_edit))
+            Worksheet.range("AD" + str(table_row_to_edit)).formula = latest_shares_focpx
+
+            # Update FNILX shares column to fit latest activities
+            latest_shares_fnilx = "=SUM($F$2:$F$" +in_table_activity_row + "*($C$2:$C$" +in_table_activity_row + "=$Q$5))"
+            print("Updating new FNILX shares from Activity List in cells AG" + str(table_row_to_edit))
+            Worksheet.range("AG" + str(table_row_to_edit)).formula = latest_shares_fnilx
+
+            # Update FLCEX shares column to fit latest activities
+            latest_shares_flcex = "=SUM($F$2:$F$" +in_table_activity_row + "*($C$2:$C$" +in_table_activity_row + "=$Q$6))"
+            print("Updating new FLCEX shares from Activity List in cells AJ" + str(table_row_to_edit))
+            Worksheet.range("AJ" + str(table_row_to_edit)).formula = latest_shares_flcex
+
+            # Update FFGCX shares column to fit latest activities
+            latest_shares_ffgcx = "=SUM($F$2:$F$" +in_table_activity_row + "*($C$2:$C$" +in_table_activity_row + "=$Q$8))"
+            print("Updating new FFGCX shares from Activity List in cells AM" + str(table_row_to_edit))
+            Worksheet.range("AM" + str(table_row_to_edit)).formula = latest_shares_ffgcx
+
+            # Update SPAXX value column to fit latest activities
+            latest_spaxx_total = "=SUM(J2:J" + in_table_activity_row + ")"
+            print("Updating new SPAXX value from Activity List in cells AO" + str(table_row_to_edit))
+            Worksheet.range("AO" + str(table_row_to_edit)).formula = latest_spaxx_total
+
+            # Update Investment Increase column to fit latest activities
+            latest_investment_increase = "=OFFSET([@[Investment Increase]],0,-1)-SUM($J$2:$J$" + in_table_activity_row + "*($E$2:$E$" + in_table_activity_row + "=$Q$31))"
+            print("Updating investment increase from Activity List in cells AQ" + str(table_row_to_edit))
+            Worksheet.range("AQ" + str(table_row_to_edit)).formula = latest_investment_increase
+
+            print("Yay!!")
+        elif table_date != new_settlement_date:
+            # uses try because iterate_set_point may not be assigned a value yet
+            try:
+                if d <= iterate_set_point:
+                    pass
+                elif d > iterate_set_point:
+                    table_activity_update_by_row(table_row_to_edit)
+            except:
+                if d <= 40:
+                    pass
+                elif d > 40:
+                    table_activity_update_by_row(table_row_to_edit)
+            
+
+
 # use macro to delete extra at symbol that has been created from copying & pasting formulas
 print("Running macro to delete extra '@' symbol...")
 DeleteExtraAtSymbolMacro = Workbook.macro("DeleteExtraAtSymbol")
 DeleteExtraAtSymbolMacro()
-
-
-
-# Determine which rows to update the table based on new activities
-for a in range(num_add):
-    print(a)
-
-    running_2 = True
-    while running_2 == True:
-
-        row = blank_row + a
-        print("Settlement date of " + str(row) + ":")
-        new_settlement_date = Worksheet.range("B" + str(row)).value
-        print(new_settlement_date)
-
-        print("Row to edit:")
-        v = Worksheet.range("V:V").value
-        for d in range(old_date_new_row + 50):
-            table_date = v[d + 1]
-            print(table_date)
-            print(new_settlement_date)
-            if table_date == new_settlement_date:
-                row_to_edit = d + 1
-                print(row_to_edit)
-                print("Yay!!")
-                running_2 = False
-            if table_date != new_settlement_date:
-                print("Try again...")
-                running_2 = False
-            
-
-

@@ -107,4 +107,5 @@ Inspiration, code snippets, etc.
 * [xlwings Documentation](https://docs.xlwings.org/en/latest/api.html)
 * [Geeks for Geeks Guide to xlwings](https://www.geeksforgeeks.org/working-with-excel-files-in-python-using-xlwings/)
 * [xlwings 1-D array solution](https://github.com/xlwings/xlwings/issues/398#:~:text=Note%20that%20currently%2C%201d%20arrays%20still%20require%20ndim%3D2%20to%20preserve%20the%20column%20orientation)
+* [Reverse a list](https://www.geeksforgeeks.org/python-reversing-list/#:~:text=Using%20reversed()%20we%20can,to%20reverse%20list%20in%2Dplace.)
 
