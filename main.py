@@ -21,17 +21,73 @@ import StockInfo
 
 # global variables
 
+# how many trading days to extend past last updated date for new activities
+ACTIVITY_AGE_LIBERTY = 40
+
+# max # of activities
+MAX_ACTIVITIES = 900
+
+# max # of days since last update
+MAX_LENGTH_SINCE_UPDATE = 200
+
 # utility functions
 
+# function updates table share, SPAXX, and Investment Increase formulas to be equal to formula below it
+def table_activity_update_by_row(row_to_edit):
+    # Update FNCMX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("X" + str(row_to_edit + 1)).formula
+    Worksheet.range("X" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FBGRX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AA" + str(row_to_edit + 1)).formula
+    Worksheet.range("AA" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FOCPX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AD" + str(row_to_edit + 1)).formula
+    Worksheet.range("AD" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FNILX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AG" + str(row_to_edit + 1)).formula
+    Worksheet.range("AG" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FLCEX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AJ" + str(row_to_edit + 1)).formula
+    Worksheet.range("AJ" + str(row_to_edit)).formula = table_row_below_formula
+    # Update FFGCX shares column to fit latest activities
+    table_row_below_formula = Worksheet.range("AM" + str(row_to_edit + 1)).formula
+    Worksheet.range("AM" + str(row_to_edit)).formula = table_row_below_formula
+    # Update SPAXX values column to fit latest activities
+    table_row_below_formula = Worksheet.range("AO" + str(row_to_edit + 1)).formula
+    Worksheet.range("AO" + str(row_to_edit)).formula = table_row_below_formula
+    # Update Investment Increase column to fit latest activities
+    table_row_below_formula = Worksheet.range("AQ" + str(row_to_edit + 1)).formula
+    Worksheet.range("AQ" + str(row_to_edit)).formula = table_row_below_formula
+
+# use macro to delete extra at symbol that has been created from copying & pasting formulas
+def delete_at_macro():
+    print("Running macro to delete extra '@' symbol...")
+    DeleteExtraAtSymbolMacro = Workbook.macro("DeleteExtraAtSymbol")
+    DeleteExtraAtSymbolMacro()
+
+# Macro Code to delete extra "@" symbol that disrupts excel formulas
+'''
+
+Sub DeleteExtraAtSymbol()
+'
+' DeleteExtraAtSymbol Macro
+' When I copy and paste using xlwings and python, it inputs an "@" symbol into some formulas. This macro is designed to remove these..
+'
+
+'
+    Columns("V:AQ").Select
+    Selection.Replace What:="@$", Replacement:="$", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+End Sub
+
+'''
+    
 # classes
 
 # From StockInfo, run function that downloads most recent stock prices
-# try:
-#     StockInfo.update_file()
-# except IndentationError:
-#     print("Encountered an Indentation Error.")
-# except:
-#     print("Encountered unknown error.")
+# print("openpyxl_________________________________")
+# StockInfo.update_file()
 
 
 # sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
@@ -60,7 +116,7 @@ print("Finding blank row: ")
 e = Worksheet.range("E:E").value
 searching = True
 while searching == True:
-    for i in range(800):
+    for i in range(MAX_ACTIVITIES):
         cell = e[i]
         if cell == None:
             global blank_row
@@ -76,7 +132,7 @@ for n in range(num_add):
     trade_date = input("Trade Date (if any) mm/dd/yy: ")
     settlement_date = input("* Settlement Date mm/dd/yy: ")
     description = input("* Enter activity description (e.g., You Sold Transaction Profit: $3.25): ")
-    quantity = input("* Enter Quantity (negative for sold): ")
+    quantity = input("Enter Quantity (negative for sold): ")
     price = input("Enter price: ")
     cost = input("Enter cost (if any): ")
     transaction_cost = input("Enter transaction cost (if any): ")
@@ -96,6 +152,7 @@ for n in range(num_add):
     take_info = True
     while take_info:
         information_input = input("* Fund/Stock Code: ")
+        # determines if input matches known stock/mutual fund
         if information_input == "SPAXX":
             information_output = "Fidelity Government Money Market (SPAXX)"
             if description != "Check Received":
@@ -142,13 +199,14 @@ print(old_date)
 
 # Create new worksheet loaded to the final worksheet
 Worksheet_Test = Workbook.sheets["Final (2)"]
-# Find value in B2 of Final (2) worksheet (may be blank)
+
+# Find value in B2 (latest price) of Final (2) worksheet (may be blank)
 print("Value in B2 of Final (2): ")
 test_B2 = Worksheet_Test.range("B2").value
 print(test_B2)
-
 # find the latest price to update the main sheet with
 print("Latest price: ")
+# acommodates if first data row of excel file is blank
 if test_B2 == None:
     latest_price = Worksheet_Test.range("B3").value
     latest_row_test = "3"
@@ -157,13 +215,13 @@ else:
     latest_row_test = "2"
 print(latest_price)
 
-# Determine which the old date needs to go once the new info is added
+# Determine which row the old date needs to go once the new info is added
 print("Old date will now go in this row: ")
 a = Worksheet_Test.range("A:A").value
 searching = True
 while searching == True:
-    # searches through A column to find the date
-    for i in range(100):
+    # searches through A column until date found
+    for i in range(MAX_LENGTH_SINCE_UPDATE):
         cell = a[i]
         if cell == old_date:
             global old_date_new_row
@@ -186,29 +244,9 @@ table = Worksheet.range("V2").expand().formula
 # paste the table into its new spot
 Worksheet.range(old_date_new_cell).expand().formula = table
 
-# Macro Code
-'''
 
-Sub DeleteExtraAtSymbol()
-'
-' DeleteExtraAtSymbol Macro
-' When I copy and paste using xlwings and python, it inputs an "@" symbol into some formulas. This macro is designed to remove these..
-'
-
-'
-    Columns("V:AQ").Select
-    Selection.Replace What:="@$", Replacement:="$", LookAt:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
-End Sub
-
-'''
-
-
-# use macro to delete extra at symbol that has popped up
-print("Running macro to delete extra '@' symbol...")
-DeleteExtraAtSymbolMacro = Workbook.macro("DeleteExtraAtSymbol")
-DeleteExtraAtSymbolMacro()
+# use macro to delete extra at symbol that has been created
+delete_at_macro()
 
 # Update lines Y, AB, AE, AH, AK, AN
 
@@ -257,109 +295,26 @@ Worksheet.range(new_fnilx_column).value = new_fnilx_test
 
 # Update Shares of Mutual Funds/Stocks, SPAXX total, and Investment Increase
 
-
-# # Update FNCMX shares column to fit latest activities
-# latest_shares_fncmx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$2))"
-# print("Updating new FNCMX shares from Activity List in cells X2:X" + str(old_date_new_row - 1))
-# for xc in range(old_date_new_row - 2):
-#     latest_shares_fncmx_cell = "X" + str(xc + 2)
-#     Worksheet.range(latest_shares_fncmx_cell).formula = latest_shares_fncmx
-
-# # Update FBGRX shares column to fit latest activities
-# latest_shares_fbgrx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$3))"
-# print("Updating new FBGRX shares from Activity List in cells AA2:AA" + str(old_date_new_row - 1))
-# for aac in range(old_date_new_row - 2):
-#     latest_shares_fbgrx_cell = "AA" + str(aac + 2)
-#     Worksheet.range(latest_shares_fbgrx_cell).formula = latest_shares_fbgrx
-
-# # Update FOCPX shares column to fit latest activities
-# latest_shares_focpx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$4))"
-# print("Updating new FOCPX shares from Activity List in cells AD2:AD" + str(old_date_new_row - 1))
-# for adc in range(old_date_new_row - 2):
-#     latest_shares_focpx_cell = "AD" + str(adc + 2)
-#     Worksheet.range(latest_shares_focpx_cell).formula = latest_shares_focpx
-
-# # Update FNILX shares column to fit latest activities
-# latest_shares_fnilx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$5))"
-# print("Updating new FNILX shares from Activity List in cells AG2:AG" + str(old_date_new_row - 1))
-# for agc in range(old_date_new_row - 2):
-#     latest_shares_fnilx_cell = "AG" + str(agc + 2)
-#     Worksheet.range(latest_shares_fnilx_cell).formula = latest_shares_fnilx
-
-# # Update FLCEX shares column to fit latest activities
-# latest_shares_flcex = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$6))"
-# print("Updating new FLCEX shares from Activity List in cells AJ2:AJ" + str(old_date_new_row - 1))
-# for ajc in range(old_date_new_row - 2):
-#     latest_shares_flcex_cell = "AJ" + str(ajc + 2)
-#     Worksheet.range(latest_shares_flcex_cell).formula = latest_shares_flcex
-
-# # Update FFGCX shares column to fit latest activities
-# latest_shares_ffgcx = "=SUM($F$2:$F$" + str(latest_activity_row) + "*($C$2:$C$" + str(latest_activity_row) + "=$Q$8))"
-# print("Updating new FFGCX shares from Activity List in cells AM2:AM" + str(old_date_new_row - 1))
-# for amc in range(old_date_new_row - 2):
-#     latest_shares_ffgcx_cell = "AM" + str(amc + 2)
-#     Worksheet.range(latest_shares_ffgcx_cell).formula = latest_shares_ffgcx
-
-# # Update SPAXX value column to fit latest activities
-# latest_spaxx_total = "=SUM(J2:J" + str(latest_activity_row) + ")"
-# print("Updating new SPAXX value from Activity List in cells AO2:AO" + str(old_date_new_row - 1))
-# for aoc in range(old_date_new_row - 2):
-#     latest_spaxx_total_cell = "AO" + str(aoc + 2)
-#     Worksheet.range(latest_spaxx_total_cell).formula = latest_spaxx_total
-
-# # Update Investment Increase column to fit latest activities
-# latest_investment_increase = "=OFFSET([@[Investment Increase]],0,-1)-SUM($J$2:$J$" + str(latest_activity_row) + "*($E$2:$E$" + str(latest_activity_row) + "=$Q$31))"
-# print("Updating investment increase from Activity List in cells AQ2:AQ" + str(old_date_new_row - 1))
-# for aqc in range(old_date_new_row - 2):
-#     latest_investment_increase_cell = "AQ" + str(aqc + 2)
-#     Worksheet.range(latest_investment_increase_cell).formula = latest_investment_increase
-
-
-    
-# function updates table share, SPAXX, and Investment Increase formulas to be equal to formula below it
-def table_activity_update_by_row(row_to_edit):
-    # Update FNCMX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("X" + str(row_to_edit + 1)).formula
-    Worksheet.range("X" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FBGRX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AA" + str(row_to_edit + 1)).formula
-    Worksheet.range("AA" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FOCPX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AD" + str(row_to_edit + 1)).formula
-    Worksheet.range("AD" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FNILX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AG" + str(row_to_edit + 1)).formula
-    Worksheet.range("AG" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FLCEX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AJ" + str(row_to_edit + 1)).formula
-    Worksheet.range("AJ" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FFGCX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AM" + str(row_to_edit + 1)).formula
-    Worksheet.range("AM" + str(row_to_edit)).formula = table_row_below_formula
-    # Update SPAXX values column to fit latest activities
-    table_row_below_formula = Worksheet.range("AO" + str(row_to_edit + 1)).formula
-    Worksheet.range("AO" + str(row_to_edit)).formula = table_row_below_formula
-    # Update Investment Increase column to fit latest activities
-    table_row_below_formula = Worksheet.range("AQ" + str(row_to_edit + 1)).formula
-    Worksheet.range("AQ" + str(row_to_edit)).formula = table_row_below_formula
-
 # Determine which rows to update the table based on new activities
 latest_activity_row = blank_row + num_add - 1
+# runs for the number of times there's a new activiy
 for a in range(num_add):
-    print(a)
+    print("Activity #" + str(a + 1))
     row = blank_row + a
     print("Settlement date of " + str(row) + ":")
     new_settlement_date = Worksheet.range("B" + str(row)).value
     print(new_settlement_date)
-    v = Worksheet.range("V2:V" + str(old_date_new_row + 40)).value
-    # reverse() reverses the order of a list
+    v = Worksheet.range("V2:V" + str(old_date_new_row + ACTIVITY_AGE_LIBERTY)).value
+    # reverse() reverses the order of a list so that list's dates go from old to current
     v.reverse()
+    # iterates through all cells in dates column and updates to include latest activites
     for d in range(len(v)):
         table_date = v[d]
         print(table_date)
         print("Table row to edit:")
-        table_row_to_edit = old_date_new_row + 40 - d
+        table_row_to_edit = old_date_new_row + ACTIVITY_AGE_LIBERTY - d
         print(table_row_to_edit)
+        # if activity date matches current row's date, update that row
         if table_date == new_settlement_date:
             global iterate_set_point
             iterate_set_point = d
@@ -406,22 +361,25 @@ for a in range(num_add):
             Worksheet.range("AQ" + str(table_row_to_edit)).formula = latest_investment_increase
 
             print("Yay!!")
+        
         elif table_date != new_settlement_date:
             # uses try because iterate_set_point may not be assigned a value yet
             try:
+                # if current list item is less than/equal to last set point, don't edit
                 if d <= iterate_set_point:
                     pass
+                # otherwise, copy formula from cell below
                 elif d > iterate_set_point:
                     table_activity_update_by_row(table_row_to_edit)
             except:
-                if d <= 40:
+                # if current list item is less than/equal to activity age wiggle room, don't edit
+                if d <= ACTIVITY_AGE_LIBERTY:
                     pass
-                elif d > 40:
+                # otherwise, copy formula from cell below
+                elif d > ACTIVITY_AGE_LIBERTY:
                     table_activity_update_by_row(table_row_to_edit)
             
 
 
 # use macro to delete extra at symbol that has been created from copying & pasting formulas
-print("Running macro to delete extra '@' symbol...")
-DeleteExtraAtSymbolMacro = Workbook.macro("DeleteExtraAtSymbol")
-DeleteExtraAtSymbolMacro()
+delete_at_macro()
