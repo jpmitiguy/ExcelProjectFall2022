@@ -8,11 +8,14 @@ I used https://docs.xlwings.org/en/latest/api.html to examine the full documenta
 I sued https://www.geeksforgeeks.org/working-with-excel-files-in-python-using-xlwings/ to understand the basics of using Excel with xlwings
 I used https://www.w3schools.com/python/python_try_except.asp to learn use try & except 
 I used https://www.geeksforgeeks.org/python-reversing-list/#:~:text=Using%20reversed()%20we%20can,to%20reverse%20list%20in%2Dplace. to reverse lists
+I used https://stackoverflow.com/questions/41977016/xlwings-using-api-autofill-how-to-pass-a-range-as-argument-for-the-range-autofil to determine how to autofill columns
+I used https://www.dataquest.io/blog/python-excel-xlwings-tutorial/#:~:text=It%20will%20be%20useful%20to%20be%20able%20to%20tell%20where%20our%20table%20ends. to find a quick way to find the last data in a column
 '''
 
 
 # Import download libraries
 import xlwings
+from xlwings.constants import AutoFillType
 # Import built-in libraries
 from time import sleep
 from datetime import date
@@ -23,9 +26,6 @@ import StockInfo
 
 # how many trading days to extend past last updated date for new activities
 ACTIVITY_AGE_LIBERTY = 40
-
-# max # of activities
-MAX_ACTIVITIES = 900
 
 # max # of days since last update
 MAX_LENGTH_SINCE_UPDATE = 200
@@ -112,18 +112,9 @@ Workbook.api.RefreshAll()
 
 # Find blank row
 print("Finding blank row: ")
-# variable holds list of values in the E column of the main worksheet
-e = Worksheet.range("E:E").value
-searching = True
-while searching == True:
-    for i in range(MAX_ACTIVITIES):
-        cell = e[i]
-        if cell == None:
-            global blank_row
-            blank_row = i + 1
-            print(blank_row)
-            searching = False
-            break
+# finds last row with data in column E
+blank_row = Worksheet.range("E2").end('down').row + 1
+print(blank_row)
 
 # Add recent activities
 num_add = int(input("How many activity additions would you like to input? "))
@@ -242,6 +233,8 @@ print(old_date_new_cell)
 print("Pasting table below...")
 table = Worksheet.range("V2").expand().formula
 # paste the table into its new spot
+
+####!!!!!!!!!!!!!!!!!!!! FIX!!!!!!!!!!!!!!!!!! ####################################
 Worksheet.range(old_date_new_cell).expand().formula = table
 
 
@@ -249,6 +242,15 @@ Worksheet.range(old_date_new_cell).expand().formula = table
 delete_at_macro()
 
 # Update lines Y, AB, AE, AH, AK, AN
+
+# find last row in table
+print("Finding last table row...")
+# https://www.dataquest.io/blog/python-excel-xlwings-tutorial/#:~:text=It%20will%20be%20useful%20to%20be%20able%20to%20tell%20where%20our%20table%20ends.
+last_table_row = Worksheet.range("Y2").end('down').row
+print("Last table row: " + str(last_table_row))
+print("Autofilling column Y")
+cells_to_autofill = "Y2:Y" + str(last_table_row)
+Worksheet.range("Y2").api.AutoFill(Worksheet.range(cells_to_autofill).api,AutoFillType.xlFillDefault)
 
 
 # BRING RECENT STOCK DATA INTO WORKSHEET
@@ -310,10 +312,8 @@ for a in range(num_add):
     # iterates through all cells in dates column and updates to include latest activites
     for d in range(len(v)):
         table_date = v[d]
-        print(table_date)
-        print("Table row to edit:")
         table_row_to_edit = old_date_new_row + ACTIVITY_AGE_LIBERTY - d
-        print(table_row_to_edit)
+        print("Updating row " + str(table_row_to_edit) + " with date " + str(table_date))
         # if activity date matches current row's date, update that row
         if table_date == new_settlement_date:
             global iterate_set_point
