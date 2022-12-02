@@ -1,6 +1,8 @@
 # This file will update and save Test.xlsx
 
 # Sources: https://www.geeksforgeeks.org/python-script-to-automate-refreshing-an-excel-spreadsheet/
+# https://stackoverflow.com/questions/45183713/open-excel-file-to-run-macro-from-relative-file-path-in-python
+
 
 # pip install pywin32
 
@@ -22,10 +24,11 @@ def update_file():
     # Opening your workbook
     print("Opening your excel file...")
     # solve to relative filepath errors
+    # https://stackoverflow.com/questions/45183713/open-excel-file-to-run-macro-from-relative-file-path-in-python 
     Filedir = os.path.dirname(os.path.realpath('__file__'))
-    filename = os.path.join(Filedir, "..\StockAndMutualFundInfo.xlsx")
+    filename = os.path.join(Filedir, "StockAndMutualFundInfo.xlsx")
     print(filename)
-    Workbook = File.Workbooks.Open(Filename = filename)
+    Workbook = File.Workbooks.Open(filename)
 
     # Waits 2 sec (uses time library)
     sleep(2)
@@ -56,7 +59,7 @@ def update_file():
     if str(Worksheet.Cells(2, 1).Value) == new_today_date:
         print("Appears to have worked!")
         # Saves the workbook
-        # Workbook.Save()
+        Workbook.Save()
         print("Saving file...")
         # Closes the Excel file
         File.Quit()

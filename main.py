@@ -92,7 +92,7 @@ print("xlwings_____________________________________")
 
 # Load workbook
 print("Loading workbook...")
-Workbook = xlwings.Book("../FidelityHoldingsProject.xlsm")
+Workbook = xlwings.Book("FidelityHoldingsProject.xlsm")
 
 # Finds active sheet in workbook
 print("Pulling up Main Sheet...")
