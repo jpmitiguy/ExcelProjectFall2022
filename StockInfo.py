@@ -8,6 +8,7 @@
 import win32com.client
 from time import sleep
 from datetime import date
+import os
 
 def update_file():
   
@@ -20,7 +21,11 @@ def update_file():
     
     # Opening your workbook
     print("Opening your excel file...")
-    Workbook = File.Workbooks.Open("C:/Users/JP.Mitiguy23/Mitiguy/Test.xlsx")
+    # solve to relative filepath errors
+    Filedir = os.path.dirname(os.path.realpath('__file__'))
+    filename = os.path.join(Filedir, "..\StockAndMutualFundInfo.xlsx")
+    print(filename)
+    Workbook = File.Workbooks.Open(Filename = filename)
 
     # Waits 2 sec (uses time library)
     sleep(2)
@@ -51,7 +56,7 @@ def update_file():
     if str(Worksheet.Cells(2, 1).Value) == new_today_date:
         print("Appears to have worked!")
         # Saves the workbook
-        Workbook.Save()
+        # Workbook.Save()
         print("Saving file...")
         # Closes the Excel file
         File.Quit()

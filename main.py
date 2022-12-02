@@ -22,7 +22,13 @@ from datetime import date
 # Import created module
 import StockInfo
 
-# global variables
+# global variables/lists
+
+# stock and mutual fund specific info & columns
+STOCKS_AND_MUTUAL_FUND_CODES = ["FNCMX", "FBGRX", "FOCPX", "FNILX", "FLCEX", "FFGCX"]
+STOCK_AND_FUND_PRICE_COLUMNS = ["W", "Z", "AC", "AF", "AI", "AL"]
+STOCK_AND_FUND_SHARES_COLUMNS = ["X", "AA", "AD", "AG", "AJ", "AM"]
+STOCK_AND_FUND_VALUE_COLUMNS = ["Y", "AB", "AE", "AH", "AK", "AN"]
 
 # how many trading days to extend past last updated date for new activities
 ACTIVITY_AGE_LIBERTY = 40
@@ -34,24 +40,12 @@ MAX_LENGTH_SINCE_UPDATE = 200
 
 # function updates table share, SPAXX, and Investment Increase formulas to be equal to formula below it
 def table_activity_update_by_row(row_to_edit):
-    # Update FNCMX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("X" + str(row_to_edit + 1)).formula
-    Worksheet.range("X" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FBGRX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AA" + str(row_to_edit + 1)).formula
-    Worksheet.range("AA" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FOCPX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AD" + str(row_to_edit + 1)).formula
-    Worksheet.range("AD" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FNILX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AG" + str(row_to_edit + 1)).formula
-    Worksheet.range("AG" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FLCEX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AJ" + str(row_to_edit + 1)).formula
-    Worksheet.range("AJ" + str(row_to_edit)).formula = table_row_below_formula
-    # Update FFGCX shares column to fit latest activities
-    table_row_below_formula = Worksheet.range("AM" + str(row_to_edit + 1)).formula
-    Worksheet.range("AM" + str(row_to_edit)).formula = table_row_below_formula
+
+    # Update Stock & Mutual fund shares columns to fit latest activities
+    for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
+        table_row_below_formula = Worksheet.range(STOCK_AND_FUND_SHARES_COLUMNS[i] + str(row_to_edit + 1)).formula
+        Worksheet.range(STOCK_AND_FUND_SHARES_COLUMNS[i] + str(row_to_edit)).formula = table_row_below_formula
+
     # Update SPAXX values column to fit latest activities
     table_row_below_formula = Worksheet.range("AO" + str(row_to_edit + 1)).formula
     Worksheet.range("AO" + str(row_to_edit)).formula = table_row_below_formula
@@ -86,8 +80,8 @@ End Sub
 # classes
 
 # From StockInfo, run function that downloads most recent stock prices
-# print("openpyxl_________________________________")
-# StockInfo.update_file()
+print("openpyxl_________________________________")
+StockInfo.update_file()
 
 
 # sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
