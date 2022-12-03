@@ -111,3 +111,4 @@ Inspiration, code snippets, etc.
 * [Autofill columns](https://stackoverflow.com/questions/41977016/xlwings-using-api-autofill-how-to-pass-a-range-as-argument-for-the-range-autofill)
 * [Using a relative file path with win32](https://stackoverflow.com/questions/45183713/open-excel-file-to-run-macro-from-relative-file-path-in-python)
 * [Find last row with data in a column](https://www.dataquest.io/blog/python-excel-xlwings-tutorial/#:~:text=It%20will%20be%20useful%20to%20be%20able%20to%20tell%20where%20our%20table%20ends.)
+* [Insert rows](https://github.com/xlwings/xlwings/issues/1284)

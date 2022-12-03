@@ -10,6 +10,7 @@ I used https://www.w3schools.com/python/python_try_except.asp to learn use try &
 I used https://www.geeksforgeeks.org/python-reversing-list/#:~:text=Using%20reversed()%20we%20can,to%20reverse%20list%20in%2Dplace. to reverse lists
 I used https://stackoverflow.com/questions/41977016/xlwings-using-api-autofill-how-to-pass-a-range-as-argument-for-the-range-autofil to determine how to autofill columns
 I used https://www.dataquest.io/blog/python-excel-xlwings-tutorial/#:~:text=It%20will%20be%20useful%20to%20be%20able%20to%20tell%20where%20our%20table%20ends. to find a quick way to find the last data in a column
+I used https://github.com/xlwings/xlwings/issues/1284 to determine how to insert rows
 '''
 
 
@@ -79,13 +80,13 @@ End Sub
     
 # classes
 
-# From StockInfo, run function that downloads most recent stock prices
-print("openpyxl_________________________________")
-StockInfo.update_file()
+# # From StockInfo, run function that downloads most recent stock prices
+# print("openpyxl_________________________________")
+# StockInfo.update_file()
 
 
-# sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
-sleep(3)
+# # sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
+# sleep(3)
 
 ############# LOAD XLWINGS ##################
 print("xlwings_____________________________________")
@@ -94,13 +95,13 @@ print("xlwings_____________________________________")
 print("Loading workbook...")
 Workbook = xlwings.Book("FidelityHoldingsProject.xlsm")
 
-# Finds active sheet in workbook
-print("Pulling up Main Sheet...")
-Worksheet = Workbook.sheets['MainSheet']
-
 # Refresh data
 print("Refreshing data...")
 Workbook.api.RefreshAll()
+
+# Finds active sheet in workbook
+print("Pulling up Main Sheet...")
+Worksheet = Workbook.sheets['MainSheet']
 
 ################ NEW ACTIVITY ###################
 
@@ -111,7 +112,8 @@ blank_row = Worksheet.range("E2").end('down').row + 1
 print(blank_row)
 
 # Add recent activities
-num_add = int(input("How many activity additions would you like to input? "))
+# num_add = int(input("How many activity additions would you like to input? "))
+num_add = 0
 for n in range(num_add):
     print("__________Activity #" + str(n + 1) + "__________")
     trade_date = input("Trade Date (if any) mm/dd/yy: ")
@@ -224,12 +226,18 @@ print("Old table will start in this cell: ")
 old_date_new_cell = "V" + str(old_date_new_row)
 print(old_date_new_cell)
 # select the entire table
-print("Pasting table below...")
 table = Worksheet.range("V2").expand().formula
+# insert rows into 2nd to last row of table (to maintain table format)
+# https://github.com/xlwings/xlwings/issues/1284
+print("Inserting blank rows:")
+row_inserts = str(len(table) - 1) + ":" + str(len(table) + old_date_new_row - 4)
+print(row_inserts)
+Worksheet.range(row_inserts).insert()
 # paste the table into its new spot
-
-####!!!!!!!!!!!!!!!!!!!! FIX!!!!!!!!!!!!!!!!!! ####################################
-Worksheet.range(old_date_new_cell).expand().formula = table
+print("Pasting original table into:")
+table_paste_location = old_date_new_cell + ":AQ" + str(Worksheet.range(old_date_new_cell).end('down').row + old_date_new_row)
+print(table_paste_location)
+Worksheet.range(table_paste_location).formula = table
 
 
 # use macro to delete extra at symbol that has been created
