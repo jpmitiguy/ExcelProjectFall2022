@@ -27,9 +27,13 @@ import StockInfo
 
 # stock and mutual fund specific info & columns
 STOCKS_AND_MUTUAL_FUND_CODES = ["FNCMX", "FBGRX", "FOCPX", "FNILX", "FLCEX", "FFGCX"]
+STOCK_AND_MUTUAL_FUND_FULL_NAME_ROW = ["2", "3", "4", "5", "6", "8"]
 STOCK_AND_FUND_PRICE_COLUMNS = ["W", "Z", "AC", "AF", "AI", "AL"]
 STOCK_AND_FUND_SHARES_COLUMNS = ["X", "AA", "AD", "AG", "AJ", "AM"]
 STOCK_AND_FUND_VALUE_COLUMNS = ["Y", "AB", "AE", "AH", "AK", "AN"]
+STOCK_AND_FUND_PRICE_COLUMNS_STOCK_INFO = ["B", "C", "D", "E", "F", "H"]
+MONEY_MARKET_SPAXX_COLUMN = "AO"
+INVESTMENT_INCREASE_COLUMN = "AQ"
 
 # how many trading days to extend past last updated date for new activities
 ACTIVITY_AGE_LIBERTY = 40
@@ -48,11 +52,11 @@ def table_activity_update_by_row(row_to_edit):
         Worksheet.range(STOCK_AND_FUND_SHARES_COLUMNS[i] + str(row_to_edit)).formula = table_row_below_formula
 
     # Update SPAXX values column to fit latest activities
-    table_row_below_formula = Worksheet.range("AO" + str(row_to_edit + 1)).formula
-    Worksheet.range("AO" + str(row_to_edit)).formula = table_row_below_formula
+    table_row_below_formula = Worksheet.range(MONEY_MARKET_SPAXX_COLUMN + str(row_to_edit + 1)).formula
+    Worksheet.range(MONEY_MARKET_SPAXX_COLUMN + str(row_to_edit)).formula = table_row_below_formula
     # Update Investment Increase column to fit latest activities
-    table_row_below_formula = Worksheet.range("AQ" + str(row_to_edit + 1)).formula
-    Worksheet.range("AQ" + str(row_to_edit)).formula = table_row_below_formula
+    table_row_below_formula = Worksheet.range(INVESTMENT_INCREASE_COLUMN + str(row_to_edit + 1)).formula
+    Worksheet.range(INVESTMENT_INCREASE_COLUMN + str(row_to_edit)).formula = table_row_below_formula
 
 # use macro to delete extra at symbol that has been created from copying & pasting formulas
 def delete_at_macro():
@@ -99,6 +103,9 @@ Workbook = xlwings.Book("FidelityHoldingsProject.xlsm")
 print("Refreshing data...")
 Workbook.api.RefreshAll()
 
+import time
+time.sleep(4)
+
 # Finds active sheet in workbook
 print("Pulling up Main Sheet...")
 Worksheet = Workbook.sheets['MainSheet']
@@ -112,8 +119,8 @@ blank_row = Worksheet.range("E2").end('down').row + 1
 print(blank_row)
 
 # Add recent activities
-# num_add = int(input("How many activity additions would you like to input? "))
-num_add = 0
+num_add = int(input("How many activity additions would you like to input? "))
+# num_add = 0
 for n in range(num_add):
     print("__________Activity #" + str(n + 1) + "__________")
     trade_date = input("Trade Date (if any) mm/dd/yy: ")
@@ -235,7 +242,7 @@ print(row_inserts)
 Worksheet.range(row_inserts).insert()
 # paste the table into its new spot
 print("Pasting original table into:")
-table_paste_location = old_date_new_cell + ":AQ" + str(Worksheet.range(old_date_new_cell).end('down').row + old_date_new_row)
+table_paste_location = old_date_new_cell + ":" + INVESTMENT_INCREASE_COLUMN + str(Worksheet.range(old_date_new_cell).end('down').row + old_date_new_row)
 print(table_paste_location)
 Worksheet.range(table_paste_location).formula = table
 
@@ -250,9 +257,12 @@ print("Finding last table row...")
 # https://www.dataquest.io/blog/python-excel-xlwings-tutorial/#:~:text=It%20will%20be%20useful%20to%20be%20able%20to%20tell%20where%20our%20table%20ends.
 last_table_row = Worksheet.range("Y2").end('down').row
 print("Last table row: " + str(last_table_row))
-print("Autofilling column Y")
-cells_to_autofill = "Y2:Y" + str(last_table_row)
-Worksheet.range("Y2").api.AutoFill(Worksheet.range(cells_to_autofill).api,AutoFillType.xlFillDefault)
+
+# Update Stock/Mutual Fund Value Columns so formula autofills after table cut & paste
+for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
+    print("Autofilling column " + STOCK_AND_FUND_VALUE_COLUMNS[i])
+    cells_to_autofill = STOCK_AND_FUND_VALUE_COLUMNS[i] + "2:" + STOCK_AND_FUND_VALUE_COLUMNS[i] + str(last_table_row)
+    Worksheet.range(STOCK_AND_FUND_VALUE_COLUMNS[i] + "2").api.AutoFill(Worksheet.range(cells_to_autofill).api,AutoFillType.xlFillDefault)
 
 
 # BRING RECENT STOCK DATA INTO WORKSHEET
@@ -266,33 +276,13 @@ new_dates_column = "V2:V" + str(old_date_new_row)
 print("Pasting new dates from 'Final (2)' cells " + new_dates_test_column + " in 'MainSheet' cells " + new_dates_column)
 Worksheet.range(new_dates_column).value = new_dates_test
 
-# copy and paste the column of FNCMX prices
-new_fncmx_test_column = "B" + latest_row_test + ":B" + str(old_date_new_row)
-new_fncmx_test = Worksheet_Test.range(new_fncmx_test_column).options(ndim=2).value
-new_fncmx_column = "W2:W" + str(old_date_new_row)
-print("Pasting new FNCMX prices from 'Final (2)' cells " + new_fncmx_test_column + " in 'MainSheet' cells " + new_fncmx_column)
-Worksheet.range(new_fncmx_column).value = new_fncmx_test
-
-# copy and paste the column of FBGRX prices
-new_fbgrx_test_column = "C" + latest_row_test + ":C" + str(old_date_new_row)
-new_fbgrx_test = Worksheet_Test.range(new_fbgrx_test_column).options(ndim=2).value
-new_fbgrx_column = "Z2:Z" + str(old_date_new_row)
-print("Pasting new FBGRX prices from 'Final (2)' cells " + new_fbgrx_test_column + " in 'MainSheet' cells " + new_fbgrx_column)
-Worksheet.range(new_fbgrx_column).value = new_fbgrx_test
-
-# copy and paste the column of FOCPX prices
-new_focpx_test_column = "D" + latest_row_test + ":D" + str(old_date_new_row)
-new_focpx_test = Worksheet_Test.range(new_focpx_test_column).options(ndim=2).value
-new_focpx_column = "AC2:AC" + str(old_date_new_row)
-print("Pasting new FOCPX prices from 'Final (2)' cells " + new_focpx_test_column + " in 'MainSheet' cells " + new_focpx_column)
-Worksheet.range(new_focpx_column).value = new_focpx_test
-
-# copy and paste the column of FNILX prices
-new_fnilx_test_column = "E" + latest_row_test + ":E" + str(old_date_new_row)
-new_fnilx_test = Worksheet_Test.range(new_fnilx_test_column).options(ndim=2).value
-new_fnilx_column = "AF2:AF" + str(old_date_new_row)
-print("Pasting new FNILX prices from 'Final (2)' cells " + new_fnilx_test_column + " in 'MainSheet' cells " + new_fnilx_column)
-Worksheet.range(new_fnilx_column).value = new_fnilx_test
+# copy and paste column of stock & mutual fund prices
+for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
+    new_stock_mutual_fund_test_column = STOCK_AND_FUND_PRICE_COLUMNS_STOCK_INFO[i] + latest_row_test + ":" + STOCK_AND_FUND_PRICE_COLUMNS_STOCK_INFO[i] + str(old_date_new_row)
+    new_stock_mutual_fund_test = Worksheet_Test.range(new_stock_mutual_fund_test_column).options(ndim=2).value
+    new_fncmx_column = STOCK_AND_FUND_PRICE_COLUMNS[i] + "2:" + STOCK_AND_FUND_PRICE_COLUMNS[i] + str(old_date_new_row)
+    print("Pasting new " + STOCKS_AND_MUTUAL_FUND_CODES[i] + " prices from 'Final (2)' cells " + new_stock_mutual_fund_test_column + " in 'MainSheet' cells " + new_fncmx_column)
+    Worksheet.range(new_fncmx_column).value = new_stock_mutual_fund_test
 
 
 # UPDATE TABLE ROWS BASED ON ACTIVIIES
@@ -322,45 +312,21 @@ for a in range(num_add):
             iterate_set_point = d
             in_table_activity_row = str(latest_activity_row - (num_add - (a + 1)))
 
-            # Update FNCMX shares column to fit latest activities
-            latest_shares_fncmx = "=SUM($F$2:$F$" + in_table_activity_row + "*($C$2:$C$" + in_table_activity_row + "=$Q$2))"
-            print("Updating new FNCMX shares from Activity List in cell X" + str(table_row_to_edit))
-            Worksheet.range("X" + str(table_row_to_edit)).formula = latest_shares_fncmx
-
-            # Update FBGRX shares column to fit latest activities
-            latest_shares_fbgrx = "=SUM($F$2:$F$" + in_table_activity_row + "*($C$2:$C$" + in_table_activity_row + "=$Q$3))"
-            print("Updating new FBGRX shares from Activity List in cell AA" + str(table_row_to_edit))
-            Worksheet.range("AA" + str(table_row_to_edit)).formula = latest_shares_fbgrx
-
-            # Update FOCPX shares column to fit latest activities
-            latest_shares_focpx = "=SUM($F$2:$F$" +in_table_activity_row + "*($C$2:$C$" +in_table_activity_row + "=$Q$4))"
-            print("Updating new FOCPX shares from Activity List in cell AD" + str(table_row_to_edit))
-            Worksheet.range("AD" + str(table_row_to_edit)).formula = latest_shares_focpx
-
-            # Update FNILX shares column to fit latest activities
-            latest_shares_fnilx = "=SUM($F$2:$F$" +in_table_activity_row + "*($C$2:$C$" +in_table_activity_row + "=$Q$5))"
-            print("Updating new FNILX shares from Activity List in cells AG" + str(table_row_to_edit))
-            Worksheet.range("AG" + str(table_row_to_edit)).formula = latest_shares_fnilx
-
-            # Update FLCEX shares column to fit latest activities
-            latest_shares_flcex = "=SUM($F$2:$F$" +in_table_activity_row + "*($C$2:$C$" +in_table_activity_row + "=$Q$6))"
-            print("Updating new FLCEX shares from Activity List in cells AJ" + str(table_row_to_edit))
-            Worksheet.range("AJ" + str(table_row_to_edit)).formula = latest_shares_flcex
-
-            # Update FFGCX shares column to fit latest activities
-            latest_shares_ffgcx = "=SUM($F$2:$F$" +in_table_activity_row + "*($C$2:$C$" +in_table_activity_row + "=$Q$8))"
-            print("Updating new FFGCX shares from Activity List in cells AM" + str(table_row_to_edit))
-            Worksheet.range("AM" + str(table_row_to_edit)).formula = latest_shares_ffgcx
+            # Update stock & mutual fund shares columns to fit latest activities
+            for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
+                latest_shares_stock_mutual_fund = "=SUM($F$2:$F$" + in_table_activity_row + "*($C$2:$C$" + in_table_activity_row + "=$Q$" + STOCK_AND_MUTUAL_FUND_FULL_NAME_ROW[i] + "))"
+                print("Updating new " + STOCKS_AND_MUTUAL_FUND_CODES[i] + " shares from Activity List in cell " + STOCK_AND_FUND_SHARES_COLUMNS[i] + str(table_row_to_edit))
+                Worksheet.range(STOCK_AND_FUND_SHARES_COLUMNS[i] + str(table_row_to_edit)).formula = latest_shares_stock_mutual_fund
 
             # Update SPAXX value column to fit latest activities
             latest_spaxx_total = "=SUM(J2:J" + in_table_activity_row + ")"
-            print("Updating new SPAXX value from Activity List in cells AO" + str(table_row_to_edit))
-            Worksheet.range("AO" + str(table_row_to_edit)).formula = latest_spaxx_total
+            print("Updating new SPAXX value from Activity List in cells " + MONEY_MARKET_SPAXX_COLUMN + str(table_row_to_edit))
+            Worksheet.range(MONEY_MARKET_SPAXX_COLUMN + str(table_row_to_edit)).formula = latest_spaxx_total
 
             # Update Investment Increase column to fit latest activities
             latest_investment_increase = "=OFFSET([@[Investment Increase]],0,-1)-SUM($J$2:$J$" + in_table_activity_row + "*($E$2:$E$" + in_table_activity_row + "=$Q$31))"
-            print("Updating investment increase from Activity List in cells AQ" + str(table_row_to_edit))
-            Worksheet.range("AQ" + str(table_row_to_edit)).formula = latest_investment_increase
+            print("Updating investment increase from Activity List in cells " + INVESTMENT_INCREASE_COLUMN + str(table_row_to_edit))
+            Worksheet.range(INVESTMENT_INCREASE_COLUMN + str(table_row_to_edit)).formula = latest_investment_increase
 
             print("Yay!!")
         
