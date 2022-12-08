@@ -1,17 +1,16 @@
-# This file will update and save Test.xlsx
+# This file contains a function that will update and save StockAndMutualFundInfo.xlsx
 
 # Sources: https://www.geeksforgeeks.org/python-script-to-automate-refreshing-an-excel-spreadsheet/
 # https://stackoverflow.com/questions/45183713/open-excel-file-to-run-macro-from-relative-file-path-in-python
 
-
-# pip install pywin32
-
 # Importing the pywin32 module
 import win32com.client
+# Import pre-installed libraries
 from time import sleep
 from datetime import date
 import os
 
+# function that updates StockAndMutualFundInfo.xlsx
 def update_file():
   
     # Opening Excel software using the win32com
@@ -64,5 +63,6 @@ def update_file():
         # Closes the Excel file
         File.Quit()
         print("Quitting Excel...")
+    # if the excel data in A2 doesn't match today's data, an error may have occured (e.g., not connected to internet)
     else:
         print("Check for possible errors")

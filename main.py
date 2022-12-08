@@ -1,9 +1,10 @@
+# Goal
 '''
 My final project is to create a robust, concise, simple way to manage updated stock and mutual fund activity
 '''
 
+# Sources
 '''
-Sources:
 I used https://docs.xlwings.org/en/latest/api.html to examine the full documentaion of xlwings library
 I sued https://www.geeksforgeeks.org/working-with-excel-files-in-python-using-xlwings/ to understand the basics of using Excel with xlwings
 I used https://www.w3schools.com/python/python_try_except.asp to learn use try & except 
@@ -13,6 +14,7 @@ I used https://www.dataquest.io/blog/python-excel-xlwings-tutorial/#:~:text=It%2
 I used https://github.com/xlwings/xlwings/issues/1284 to determine how to insert rows
 '''
 
+## Import
 
 # Import download libraries
 import xlwings
@@ -20,10 +22,11 @@ from xlwings.constants import AutoFillType
 # Import built-in libraries
 from time import sleep
 from datetime import date
+import os
 # Import created module
 import StockInfo
 
-# global variables/lists
+## Global Variables/Lists
 
 # stock and mutual fund specific info & columns
 STOCKS_AND_MUTUAL_FUND_CODES = ["FNCMX", "FBGRX", "FOCPX", "FNILX", "FLCEX", "FFGCX"]
@@ -41,7 +44,10 @@ ACTIVITY_AGE_LIBERTY = 40
 # max # of days since last update
 MAX_LENGTH_SINCE_UPDATE = 200
 
-# utility functions
+# dummy variable to be used in later for loops
+iterate_set_point = "lorem ipsum"
+
+## Utility Functions
 
 # function updates table share, SPAXX, and Investment Increase formulas to be equal to formula below it
 def table_activity_update_by_row(row_to_edit):
@@ -81,16 +87,26 @@ Sub DeleteExtraAtSymbol()
 End Sub
 
 '''
-    
-# classes
+
+# ## Run StockInfo
 
 # # From StockInfo, run function that downloads most recent stock prices
 # print("openpyxl_________________________________")
 # StockInfo.update_file()
 
-
 # # sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
 # sleep(3)
+
+
+#####_________TEST
+
+# # relative file pathing
+# Filedir = os.path.dirname(os.path.realpath('__file__'))
+# print(Filedir)
+# filename = os.path.join(Filedir, "StockAndMutualFundInfo.xlsx")
+# print(filename)
+
+####__________END TEST
 
 ############# LOAD XLWINGS ##################
 print("xlwings_____________________________________")
@@ -112,9 +128,10 @@ Worksheet = Workbook.sheets['MainSheet']
 
 ################ NEW ACTIVITY ###################
 
-# Find blank row
+## Find blank row
 print("Finding blank row: ")
-# finds last row with data in column E
+# finds first blank row in the Main Worksheet without data in column E
+# https://www.dataquest.io/blog/python-excel-xlwings-tutorial/#:~:text=It%20will%20be%20useful%20to%20be%20able%20to%20tell%20where%20our%20table%20ends.
 blank_row = Worksheet.range("E2").end('down').row + 1
 print(blank_row)
 
@@ -198,9 +215,10 @@ Worksheet_Test = Workbook.sheets["Final (2)"]
 print("Value in B2 of Final (2): ")
 test_B2 = Worksheet_Test.range("B2").value
 print(test_B2)
+
 # find the latest price to update the main sheet with
 print("Latest price: ")
-# acommodates if first data row of excel file is blank
+# if/else acommodates if first data row of excel file is blank
 if test_B2 == None:
     latest_price = Worksheet_Test.range("B3").value
     latest_row_test = "3"
@@ -211,32 +229,31 @@ print(latest_price)
 
 # Determine which row the old date needs to go once the new info is added
 print("Old date will now go in this row: ")
+# 'a' is a list of all the data values in column A
 a = Worksheet_Test.range("A:A").value
-searching = True
-while searching == True:
-    # searches through A column until date found
-    for i in range(MAX_LENGTH_SINCE_UPDATE):
-        cell = a[i]
-        if cell == old_date:
-            global old_date_new_row
-            # Determines if a one cell adjustment needs to be made to account for blank 1st row
-            if test_B2 == None:
-                old_date_new_row = i
-            else:
-                old_date_new_row = i + 1
-            print(old_date_new_row)
-            searching = False
-            break
+# searches through A column until date found
+for i in range(MAX_LENGTH_SINCE_UPDATE):
+    cell = a[i]
+    if cell == old_date:
+        global old_date_new_row
+        # Determines if a one cell adjustment needs to be made to account for blank 1st row
+        if test_B2 == None:
+            old_date_new_row = i
+        else:
+            old_date_new_row = i + 1
+        print(old_date_new_row)
+        break
 
-# first cell of old date
+# get first cell of old date
 print("Old table will start in this cell: ")
 old_date_new_cell = "V" + str(old_date_new_row)
 print(old_date_new_cell)
-# select the entire table
+
+# assign variable with values of the entire table
 table = Worksheet.range("V2").expand().formula
 # insert rows into 2nd to last row of table (to maintain table format)
 # https://github.com/xlwings/xlwings/issues/1284
-print("Inserting blank rows:")
+print("Inserting blank rows in rows:")
 row_inserts = str(len(table) - 1) + ":" + str(len(table) + old_date_new_row - 4)
 print(row_inserts)
 Worksheet.range(row_inserts).insert()
@@ -246,28 +263,48 @@ table_paste_location = old_date_new_cell + ":" + INVESTMENT_INCREASE_COLUMN + st
 print(table_paste_location)
 Worksheet.range(table_paste_location).formula = table
 
-
 # use macro to delete extra at symbol that has been created
 delete_at_macro()
 
-# Update lines Y, AB, AE, AH, AK, AN
+
+######____________TEST
+
+# Workbook_Stock_Info = xlwings.Book("StockAndMutualFundInfo.xlsx")
+# Worksheet_Stock_Info = Workbook_Stock_Info.sheets["Final (2)"]
+# stock_info_table = Worksheet_Stock_Info.range("A1").expand().formula
+
+# print("Inserting blank rows:")
+# # Worksheet_Test.range(row_inserts).insert()
+# time.sleep(3)
+# # paste the table into its new spot
+# print("Pasting original table into:")
+# # Worksheet_Test.range("A1").expand().formula = stock_info_table
+# Worksheet_Test = Worksheet_Stock_Info
+
+# time.sleep(10)
+
+
+#####____________END TEST
+
+## UPDATE COLUMNS Y, AB, AE, AH, AK, AN after cut & paste creates unconsistent formulas in these columns
 
 # find last row in table
 print("Finding last table row...")
-# https://www.dataquest.io/blog/python-excel-xlwings-tutorial/#:~:text=It%20will%20be%20useful%20to%20be%20able%20to%20tell%20where%20our%20table%20ends.
 last_table_row = Worksheet.range("Y2").end('down').row
 print("Last table row: " + str(last_table_row))
 
-# Update Stock/Mutual Fund Value Columns so formula autofills after table cut & paste
+# Update Stock/Mutual Fund Value Columns so formula autofills
 for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
     print("Autofilling column " + STOCK_AND_FUND_VALUE_COLUMNS[i])
     cells_to_autofill = STOCK_AND_FUND_VALUE_COLUMNS[i] + "2:" + STOCK_AND_FUND_VALUE_COLUMNS[i] + str(last_table_row)
+    # Autofill formulas
+    # https://stackoverflow.com/questions/41977016/xlwings-using-api-autofill-how-to-pass-a-range-as-argument-for-the-range-autofil
     Worksheet.range(STOCK_AND_FUND_VALUE_COLUMNS[i] + "2").api.AutoFill(Worksheet.range(cells_to_autofill).api,AutoFillType.xlFillDefault)
 
 
-# BRING RECENT STOCK DATA INTO WORKSHEET
+## BRING RECENT STOCK DATA INTO WORKSHEET
 
-# copy and paste the column of dates
+# copy and paste the column of dates from other sheet
 new_dates_test_column = "A" + latest_row_test + ":A" + str(old_date_new_row)
 # ndim=2 ensures copied column is pasted as column and not row:
 # https://github.com/xlwings/xlwings/issues/398#:~:text=Note%20that%20currently%2C%201d%20arrays%20still%20require%20ndim%3D2%20to%20preserve%20the%20column%20orientation
@@ -276,7 +313,7 @@ new_dates_column = "V2:V" + str(old_date_new_row)
 print("Pasting new dates from 'Final (2)' cells " + new_dates_test_column + " in 'MainSheet' cells " + new_dates_column)
 Worksheet.range(new_dates_column).value = new_dates_test
 
-# copy and paste column of stock & mutual fund prices
+# copy and paste columns of stock & mutual fund prices
 for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
     new_stock_mutual_fund_test_column = STOCK_AND_FUND_PRICE_COLUMNS_STOCK_INFO[i] + latest_row_test + ":" + STOCK_AND_FUND_PRICE_COLUMNS_STOCK_INFO[i] + str(old_date_new_row)
     new_stock_mutual_fund_test = Worksheet_Test.range(new_stock_mutual_fund_test_column).options(ndim=2).value
@@ -284,12 +321,7 @@ for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
     print("Pasting new " + STOCKS_AND_MUTUAL_FUND_CODES[i] + " prices from 'Final (2)' cells " + new_stock_mutual_fund_test_column + " in 'MainSheet' cells " + new_fncmx_column)
     Worksheet.range(new_fncmx_column).value = new_stock_mutual_fund_test
 
-
-# UPDATE TABLE ROWS BASED ON ACTIVIIES
-
-# Update Shares of Mutual Funds/Stocks, SPAXX total, and Investment Increase
-
-# Determine which rows to update the table based on new activities
+# Update Table Shares of Mutual Funds/Stocks, SPAXX total, and Investment Increase based on new activity additions
 latest_activity_row = blank_row + num_add - 1
 # runs for the number of times there's a new activiy
 for a in range(num_add):
@@ -299,7 +331,8 @@ for a in range(num_add):
     new_settlement_date = Worksheet.range("B" + str(row)).value
     print(new_settlement_date)
     v = Worksheet.range("V2:V" + str(old_date_new_row + ACTIVITY_AGE_LIBERTY)).value
-    # reverse() reverses the order of a list so that list's dates go from old to current
+    # reverse() reverses the order of a list so that list's dates go from old to current (bottom to top)
+    # https://www.geeksforgeeks.org/python-reversing-list/#:~:text=Using%20reversed()%20we%20can,to%20reverse%20list%20in%2Dplace.
     v.reverse()
     # iterates through all cells in dates column and updates to include latest activites
     for d in range(len(v)):
@@ -308,7 +341,9 @@ for a in range(num_add):
         print("Updating row " + str(table_row_to_edit) + " with date " + str(table_date))
         # if activity date matches current row's date, update that row
         if table_date == new_settlement_date:
-            global iterate_set_point
+            # assign 'iterate_set_point' so that future runs in 'for loop' with 'a' doesn't start from bottom of list of v
+            print("Iterate set point A:")
+            print(iterate_set_point)
             iterate_set_point = d
             in_table_activity_row = str(latest_activity_row - (num_add - (a + 1)))
 
@@ -329,25 +364,26 @@ for a in range(num_add):
             Worksheet.range(INVESTMENT_INCREASE_COLUMN + str(table_row_to_edit)).formula = latest_investment_increase
 
             print("Yay!!")
-        
-        elif table_date != new_settlement_date:
-            # uses try because iterate_set_point may not be assigned a value yet
-            try:
-                # if current list item is less than/equal to last set point, don't edit
-                if d <= iterate_set_point:
-                    pass
-                # otherwise, copy formula from cell below
-                elif d > iterate_set_point:
-                    table_activity_update_by_row(table_row_to_edit)
-            except:
-                # if current list item is less than/equal to activity age wiggle room, don't edit
-                if d <= ACTIVITY_AGE_LIBERTY:
-                    pass
-                # otherwise, copy formula from cell below
-                elif d > ACTIVITY_AGE_LIBERTY:
-                    table_activity_update_by_row(table_row_to_edit)
-            
-
+        # if there have been no updates since the current 'table date'
+        elif table_date != new_settlement_date and iterate_set_point == "lorem ipsum":
+            print("Iterate set point B:")
+            print(iterate_set_point)
+            # if current list item is less than/equal to activity age wiggle room, don't edit
+            if d <= ACTIVITY_AGE_LIBERTY:
+                pass
+            # otherwise, copy formula from cell below
+            elif d > ACTIVITY_AGE_LIBERTY:
+                table_activity_update_by_row(table_row_to_edit)
+        # else - there have been edits to the table but the current 'table date' does not equal the latest 'new_settlement_date'
+        else:
+            print("Iterate set point C:")
+            print(iterate_set_point)
+            # if current list item is less than/equal to last set point, don't edit
+            if d <= iterate_set_point:
+                pass
+            # otherwise, copy formula from cell below
+            elif d > iterate_set_point:
+                table_activity_update_by_row(table_row_to_edit)
 
 # use macro to delete extra at symbol that has been created from copying & pasting formulas
 delete_at_macro()
