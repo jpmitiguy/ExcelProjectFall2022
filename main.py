@@ -21,8 +21,6 @@ import xlwings
 from xlwings.constants import AutoFillType
 # Import built-in libraries
 from time import sleep
-from datetime import date
-import os
 # Import created module
 import StockInfo
 
@@ -67,6 +65,8 @@ def table_activity_update_by_row(row_to_edit):
 # use macro to delete extra at symbol that has been created from copying & pasting formulas
 def delete_at_macro():
     print("Running macro to delete extra '@' symbol...")
+    # selects 'MainSheet' before running the macro
+    Worksheet.used_range.select()
     DeleteExtraAtSymbolMacro = Workbook.macro("DeleteExtraAtSymbol")
     DeleteExtraAtSymbolMacro()
 
@@ -88,43 +88,35 @@ End Sub
 
 '''
 
-# ## Run StockInfo
+## Run StockInfo
 
-# # From StockInfo, run function that downloads most recent stock prices
-# print("openpyxl_________________________________")
-# StockInfo.update_file()
+# From StockInfo, run function that downloads most recent stock prices
+print("win32/pywin32_________________________________")
+StockInfo.update_file()
 
-# # sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
-# sleep(3)
-
-
-#####_________TEST
-
-# # relative file pathing
-# Filedir = os.path.dirname(os.path.realpath('__file__'))
-# print(Filedir)
-# filename = os.path.join(Filedir, "StockAndMutualFundInfo.xlsx")
-# print(filename)
-
-####__________END TEST
+# sleep for 3 seconds to ensure smooth transition from openpyxl to xlwings code
+sleep(3)
 
 ############# LOAD XLWINGS ##################
 print("xlwings_____________________________________")
 
-# Load workbook
-print("Loading workbook...")
+# Load workbooks
+print("Loading workbooks...")
 Workbook = xlwings.Book("FidelityHoldingsProject.xlsm")
+Workbook_Stock_Info = xlwings.Book("StockAndMutualFundInfo.xlsx")
 
 # Refresh data
 print("Refreshing data...")
 Workbook.api.RefreshAll()
 
-import time
-time.sleep(4)
+# Pause to ensure time to Refresh sheets
+sleep(4)
 
-# Finds active sheet in workbook
-print("Pulling up Main Sheet...")
+# Finds Sheets in workbooks
+print("Pulling up Sheets...")
 Worksheet = Workbook.sheets['MainSheet']
+Worksheet_Stock_Info = Workbook_Stock_Info.sheets["Final (2)"]
+Worksheet_Test = Workbook.sheets["Final (2)"]
 
 ################ NEW ACTIVITY ###################
 
@@ -200,7 +192,6 @@ for n in range(num_add):
     print("Filling in data...")
     input_cell = "A" + str(blank_row + n)
     Worksheet.range(input_cell).value = [trade_date, settlement_date, information_output, symbol_cusip, description, quantity, price, cost, transaction_cost, amount, ref_num, type, reg_rep, order_num]
-    
 
 ################ UPDATE TABLE #########################
 # Find the date in spot V2 (last updated date)
@@ -208,19 +199,16 @@ print("Old date: ")
 old_date = Worksheet.range("V2").value
 print(old_date)
 
-# Create new worksheet loaded to the final worksheet
-Worksheet_Test = Workbook.sheets["Final (2)"]
-
 # Find value in B2 (latest price) of Final (2) worksheet (may be blank)
-print("Value in B2 of Final (2): ")
-test_B2 = Worksheet_Test.range("B2").value
+print("Value in B2 of Final (2) from StockAndMutualFundInfo.xlsx :")
+test_B2 = Worksheet_Stock_Info.range("B2").value
 print(test_B2)
 
 # find the latest price to update the main sheet with
 print("Latest price: ")
 # if/else acommodates if first data row of excel file is blank
 if test_B2 == None:
-    latest_price = Worksheet_Test.range("B3").value
+    latest_price = Worksheet_Stock_Info.range("B3").value
     latest_row_test = "3"
 else:
     latest_price = test_B2
@@ -230,7 +218,7 @@ print(latest_price)
 # Determine which row the old date needs to go once the new info is added
 print("Old date will now go in this row: ")
 # 'a' is a list of all the data values in column A
-a = Worksheet_Test.range("A:A").value
+a = Worksheet_Stock_Info.range("A:A").value
 # searches through A column until date found
 for i in range(MAX_LENGTH_SINCE_UPDATE):
     cell = a[i]
@@ -249,7 +237,7 @@ print("Old table will start in this cell: ")
 old_date_new_cell = "V" + str(old_date_new_row)
 print(old_date_new_cell)
 
-# assign variable with values of the entire table
+# Copy table into designated rows below
 table = Worksheet.range("V2").expand().formula
 # insert rows into 2nd to last row of table (to maintain table format)
 # https://github.com/xlwings/xlwings/issues/1284
@@ -266,26 +254,6 @@ Worksheet.range(table_paste_location).formula = table
 # use macro to delete extra at symbol that has been created
 delete_at_macro()
 
-
-######____________TEST
-
-# Workbook_Stock_Info = xlwings.Book("StockAndMutualFundInfo.xlsx")
-# Worksheet_Stock_Info = Workbook_Stock_Info.sheets["Final (2)"]
-# stock_info_table = Worksheet_Stock_Info.range("A1").expand().formula
-
-# print("Inserting blank rows:")
-# # Worksheet_Test.range(row_inserts).insert()
-# time.sleep(3)
-# # paste the table into its new spot
-# print("Pasting original table into:")
-# # Worksheet_Test.range("A1").expand().formula = stock_info_table
-# Worksheet_Test = Worksheet_Stock_Info
-
-# time.sleep(10)
-
-
-#####____________END TEST
-
 ## UPDATE COLUMNS Y, AB, AE, AH, AK, AN after cut & paste creates unconsistent formulas in these columns
 
 # find last row in table
@@ -301,6 +269,17 @@ for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
     # https://stackoverflow.com/questions/41977016/xlwings-using-api-autofill-how-to-pass-a-range-as-argument-for-the-range-autofil
     Worksheet.range(STOCK_AND_FUND_VALUE_COLUMNS[i] + "2").api.AutoFill(Worksheet.range(cells_to_autofill).api,AutoFillType.xlFillDefault)
 
+# Copy information from 'Final (2)' Worksheet in StockAndMutualFundInfo.xlsx to 'Final (2)' Worksheet in FidelityHoldingsProject.xlsm
+stock_info_table = Worksheet_Stock_Info.range("A1").expand().value
+print("Number of blank rows inserted:")
+print(row_inserts)
+Worksheet_Test.range(row_inserts).insert()
+# paste the table into its new spot
+print("Pasting original table into:")
+stock_info_table_range = "A1:" + STOCK_AND_FUND_PRICE_COLUMNS_STOCK_INFO[len(STOCKS_AND_MUTUAL_FUND_CODES) - 1] + str(Worksheet_Test.range("A1").end('down').row)
+print(stock_info_table_range)
+Worksheet_Test.range(stock_info_table_range).expand().value = stock_info_table
+# TO DO___________ Close StockAndMutualFundInfo.xlsx
 
 ## BRING RECENT STOCK DATA INTO WORKSHEET
 
@@ -342,8 +321,6 @@ for a in range(num_add):
         # if activity date matches current row's date, update that row
         if table_date == new_settlement_date:
             # assign 'iterate_set_point' so that future runs in 'for loop' with 'a' doesn't start from bottom of list of v
-            print("Iterate set point A:")
-            print(iterate_set_point)
             iterate_set_point = d
             in_table_activity_row = str(latest_activity_row - (num_add - (a + 1)))
 
@@ -366,8 +343,6 @@ for a in range(num_add):
             print("Yay!!")
         # if there have been no updates since the current 'table date'
         elif table_date != new_settlement_date and iterate_set_point == "lorem ipsum":
-            print("Iterate set point B:")
-            print(iterate_set_point)
             # if current list item is less than/equal to activity age wiggle room, don't edit
             if d <= ACTIVITY_AGE_LIBERTY:
                 pass
@@ -376,8 +351,6 @@ for a in range(num_add):
                 table_activity_update_by_row(table_row_to_edit)
         # else - there have been edits to the table but the current 'table date' does not equal the latest 'new_settlement_date'
         else:
-            print("Iterate set point C:")
-            print(iterate_set_point)
             # if current list item is less than/equal to last set point, don't edit
             if d <= iterate_set_point:
                 pass

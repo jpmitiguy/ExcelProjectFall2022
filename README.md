@@ -13,7 +13,7 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 ### Dependencies
 
 * Requires Python installation. Version 3.10 recommended
-* Requires xlwings library
+* Requires xlwings library and pywin32 library
 * Requires time & datetime libraries (generally pre-installed with Python installation)
 * Requires Excel files
     1. Excel file with up-to-date stock/mutual fund information
@@ -21,34 +21,9 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 
 ### Installing
 
-1. Install xlwings
-2. Download main.py and StockInfo.py files to the same folder
-3. Change line 23 of StockInfo.py to call the Excel File with stock/mutual fund prices (see example below)
-    ```
-    Workbook = File.Workbooks.Open("C:/Users/Joe/Investments/AccountInfo.xlsm")
-    ```
-4. Change line 21 of main.py to call the Excel file with account information (see example below)
-    ```
-    Workbook = xlwings.Book("C:/Users/Joe/Investments/StockAndMutualFundPrices.xlsm")
-    ```
-5. Create Excel macro in file with account information (copy and paste code below)
-    ```
-        
-    Sub DeleteExtraAtSymbol()
-    '
-    ' DeleteExtraAtSymbol Macro
-    ' When copying and pasting using xlwings and python, it inputs an "@" symbol into some formulas. This macro is designed to remove these..
-    '
-
-    '
-        Columns("V:AQ").Select
-        Selection.Replace What:="@$", Replacement:="$", LookAt:=xlPart, _
-            SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-            ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
-    End Sub
-
-    ```
-    
+1. Install xlwings & pywin32
+2. Download main.py, StockInfo.py, FidelityHoldingsProject.xlsm, and StockAndMutualFundInfo.xlsx files to the same folder
+3. Use FidelityHoldingsProject.xlsm and StockAndMutualFundInfo.xlsx as templates to adjust to your own criteria
 
 ### Executing program
 
@@ -62,15 +37,15 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
         ```
         Trade Date (if any) mm/dd/yy: 05/02/22
         * Settlement Date mm/dd/yy: : 05/03/22
-        Enter activity description (e.g., You Sold Transaction Profit: $3.25): You Sold Transaction Profit: $33.11 Transaction Loss: $3.94
-        * Enter Quantity (negative for sold): -42.211
+        * Enter activity description (e.g., You Sold Transaction Profit: $3.25): You Sold Transaction Profit: $33.11 Transaction Loss: $3.94
+        Enter Quantity (negative for sold): -42.211
         Enter price: 18.72
         Enter cost (if any): 575.38
         Enter transaction cost (if any): 
         * Enter amount (negative for buy): 790.19
         Enter reference number (if any): 10482-GHSW9T
         Enter order number: 20481-J2IAWB
-        Fund/Stock Code: FNILX
+        * Fund/Stock Code: FNILX
         ```
 
 ## Help

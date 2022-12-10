@@ -21,12 +21,11 @@ def update_file():
     File.Visible = 1
     
     # Opening your workbook
-    print("Opening your excel file...")
     # solve to relative filepath errors
     # https://stackoverflow.com/questions/45183713/open-excel-file-to-run-macro-from-relative-file-path-in-python 
     Filedir = os.path.dirname(os.path.realpath('__file__'))
     filename = os.path.join(Filedir, "StockAndMutualFundInfo.xlsx")
-    print(filename)
+    print("Opening " + filename)
     Workbook = File.Workbooks.Open(filename)
 
     # Waits 2 sec (uses time library)
