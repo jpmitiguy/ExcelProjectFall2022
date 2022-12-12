@@ -1,3 +1,5 @@
+# JP Mitiguy
+
 # Goal
 '''
 My final project is to create a robust, concise, simple way to manage updated stock and mutual fund activity
@@ -21,26 +23,12 @@ import xlwings
 from xlwings.constants import AutoFillType
 # Import built-in libraries
 from time import sleep
-# Import created module
+# Import created modules
 import StockInfo
+from settings import *
 
 ## Global Variables/Lists
-
-# stock and mutual fund specific info & columns
-STOCKS_AND_MUTUAL_FUND_CODES = ["FNCMX", "FBGRX", "FOCPX", "FNILX", "FLCEX", "FFGCX"]
-STOCK_AND_MUTUAL_FUND_FULL_NAME_ROW = ["2", "3", "4", "5", "6", "8"]
-STOCK_AND_FUND_PRICE_COLUMNS = ["W", "Z", "AC", "AF", "AI", "AL"]
-STOCK_AND_FUND_SHARES_COLUMNS = ["X", "AA", "AD", "AG", "AJ", "AM"]
-STOCK_AND_FUND_VALUE_COLUMNS = ["Y", "AB", "AE", "AH", "AK", "AN"]
-STOCK_AND_FUND_PRICE_COLUMNS_STOCK_INFO = ["B", "C", "D", "E", "F", "H"]
-MONEY_MARKET_SPAXX_COLUMN = "AO"
-INVESTMENT_INCREASE_COLUMN = "AQ"
-
-# how many trading days to extend past last updated date for new activities
-ACTIVITY_AGE_LIBERTY = 40
-
-# max # of days since last update
-MAX_LENGTH_SINCE_UPDATE = 200
+# see settings.py
 
 # dummy variable to be used in later for loops
 iterate_set_point = "lorem ipsum"
@@ -52,6 +40,7 @@ def table_activity_update_by_row(row_to_edit):
 
     # Update Stock & Mutual fund shares columns to fit latest activities
     for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
+        # 'Worksheet.range("A1").formula' syntax either finds or sets the formula in cell A1 of the Excel Worksheet assigned the variable 'Worksheet'
         table_row_below_formula = Worksheet.range(STOCK_AND_FUND_SHARES_COLUMNS[i] + str(row_to_edit + 1)).formula
         Worksheet.range(STOCK_AND_FUND_SHARES_COLUMNS[i] + str(row_to_edit)).formula = table_row_below_formula
 
@@ -65,8 +54,8 @@ def table_activity_update_by_row(row_to_edit):
 # use macro to delete extra at symbol that has been created from copying & pasting formulas
 def delete_at_macro():
     print("Running macro to delete extra '@' symbol...")
-    # selects 'MainSheet' before running the macro
-    Worksheet.used_range.select()
+    # closes StockAndMutualFundInfo.xlsx to ensure macro runs in correct Workbook
+    Workbook_Stock_Info.close()
     DeleteExtraAtSymbolMacro = Workbook.macro("DeleteExtraAtSymbol")
     DeleteExtraAtSymbolMacro()
 
@@ -200,7 +189,7 @@ old_date = Worksheet.range("V2").value
 print(old_date)
 
 # Find value in B2 (latest price) of Final (2) worksheet (may be blank)
-print("Value in B2 of Final (2) from StockAndMutualFundInfo.xlsx :")
+print("Value in B2 of Final (2) from StockAndMutualFundInfo.xlsx:")
 test_B2 = Worksheet_Stock_Info.range("B2").value
 print(test_B2)
 
@@ -253,6 +242,9 @@ Worksheet.range(table_paste_location).formula = table
 
 # use macro to delete extra at symbol that has been created
 delete_at_macro()
+# re-open StockAndMutualFundInfo.xlsx after function above closed
+Workbook_Stock_Info = xlwings.Book("StockAndMutualFundInfo.xlsx")
+Worksheet_Stock_Info = Workbook_Stock_Info.sheets["Final (2)"]
 
 ## UPDATE COLUMNS Y, AB, AE, AH, AK, AN after cut & paste creates unconsistent formulas in these columns
 
@@ -360,3 +352,6 @@ for a in range(num_add):
 
 # use macro to delete extra at symbol that has been created from copying & pasting formulas
 delete_at_macro()
+# re-open StockAndMutualFundInfo.xlsx after function above closed
+Workbook_Stock_Info = xlwings.Book("StockAndMutualFundInfo.xlsx")
+Worksheet_Stock_Info = Workbook_Stock_Info.sheets["Final (2)"]

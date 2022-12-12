@@ -1,7 +1,10 @@
 # This file contains a function that will update and save StockAndMutualFundInfo.xlsx
 
-# Sources: https://www.geeksforgeeks.org/python-script-to-automate-refreshing-an-excel-spreadsheet/
-# https://stackoverflow.com/questions/45183713/open-excel-file-to-run-macro-from-relative-file-path-in-python
+# Sources:
+'''
+https://www.geeksforgeeks.org/python-script-to-automate-refreshing-an-excel-spreadsheet/
+https://stackoverflow.com/questions/45183713/open-excel-file-to-run-macro-from-relative-file-path-in-python
+'''
 
 # Importing the pywin32 module
 import win32com.client
