@@ -311,8 +311,6 @@ for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
     Worksheet.range(new_fncmx_column).value = new_stock_mutual_fund_test
 
 # Update Table Shares of Mutual Funds/Stocks, SPAXX total, and Investment Increase based on new activity additions
-latest_activity_row = blank_row + num_add - 1
-# runs for the number of times there's a new activiy
 for a in range(num_add):
     print("Activity #" + str(a + 1))
     row = blank_row + a
@@ -332,7 +330,7 @@ for a in range(num_add):
         if table_date == new_settlement_date:
             # assign 'iterate_set_point' so that future runs in 'for loop' with 'a' doesn't start from bottom of list of v
             iterate_set_point = d
-            in_table_activity_row = str(latest_activity_row - (num_add - (a + 1)))
+            in_table_activity_row = str(activity_table.rows - (num_add - (a + 1)))
 
             # Update stock & mutual fund shares columns to fit latest activities
             for i in range(len(STOCKS_AND_MUTUAL_FUND_CODES)):
