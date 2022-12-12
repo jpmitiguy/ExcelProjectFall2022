@@ -59,6 +59,85 @@ def delete_at_macro():
     DeleteExtraAtSymbolMacro = Workbook.macro("DeleteExtraAtSymbol")
     DeleteExtraAtSymbolMacro()
 
+# create class of Activity Table
+class Actv_Table:
+    # table has rows and columns
+    def __init__(self, columns, rows):
+        self.columns = columns
+        self.rows = rows
+
+    # create method that adds new activities to the table
+    def new_activity(self):
+        # Add recent activities
+        global num_add
+        num_add = int(input("How many activity additions would you like to input? "))
+        # add new activities to number of rows in the table
+        self.rows += num_add
+        print("Rows in activity table" + str(self.rows))
+        for n in range(num_add):
+            print("__________Activity #" + str(n + 1) + "__________")
+            trade_date = input("Trade Date (if any) mm/dd/yy: ")
+            settlement_date = input("* Settlement Date mm/dd/yy: ")
+            description = input("* Enter activity description (e.g., You Sold Transaction Profit: $3.25): ")
+            quantity = input("Enter Quantity (negative for sold): ")
+            price = input("Enter price: ")
+            cost = input("Enter cost (if any): ")
+            transaction_cost = input("Enter transaction cost (if any): ")
+            amount = input("* Enter amount (negative for buy): ")
+            # if ref. num. exists, fill in other values automatically
+            ref_num = input("Enter reference number (if any): ")
+            if ref_num != "":
+                type = "1*"
+                reg_rep = "E##"
+                order_num = input("Enter order number: ")
+            else:
+                type = ""
+                reg_rep = ""
+                order_num = ""
+
+            # while loop takes in fund/stock code data & adds known info accordingly
+            take_info = True
+            while take_info:
+                information_input = input("* Fund/Stock Code: ")
+                # determines if input matches known stock/mutual fund
+                if information_input == "SPAXX":
+                    information_output = "Fidelity Government Money Market (SPAXX)"
+                    if description != "Check Received":
+                        symbol_cusip = "31617H102"
+                    else:
+                        symbol_cusip = ""
+                    take_info = False
+                elif information_input == "FNCMX":
+                    information_output = "Fidelity Nasdaq Composite Index Fund (FNCMX)"
+                    take_info = False
+                    symbol_cusip = "315912709"
+                elif information_input == "FBGRX":
+                    information_output = "Fidelity Blue Chip Growth Fund (FBGRX)"
+                    symbol_cusip = "316389303"
+                    take_info = False
+                elif information_input == "FOCPX":
+                    information_output = "Fidelity OTC Portfolio (FOCPX)"
+                    symbol_cusip = "316389105"
+                    take_info = False
+                elif information_input == "FNILX":
+                    information_output = "Fidelity Zero Large Cap Index Fund (FNILX)"
+                    symbol_cusip = "315911628"
+                    take_info = False
+                elif information_input == "FLCEX":
+                    information_output = "Fidelity Large Cap Core Enhanced Index Fund (FLCEX)"
+                    symbol_cusip = "31606X100"
+                    take_info = False
+                elif information_input == "FFGCX":
+                    information_output = "Fidelity Global Commodity Stock Fund (FFGCX)"
+                    symbol_cusip = "31618H606"
+                    take_info = False
+
+            # add data to blank rows in excel
+            print("Filling in data...")
+            input_cell = "A" + str(blank_row + n)
+            Worksheet.range(input_cell).value = [trade_date, settlement_date, information_output, symbol_cusip, description, quantity, price, cost, transaction_cost, amount, ref_num, type, reg_rep, order_num]
+
+
 # Macro Code to delete extra "@" symbol that disrupts excel formulas
 '''
 
@@ -116,71 +195,10 @@ print("Finding blank row: ")
 blank_row = Worksheet.range("E2").end('down').row + 1
 print(blank_row)
 
-# Add recent activities
-num_add = int(input("How many activity additions would you like to input? "))
-# num_add = 0
-for n in range(num_add):
-    print("__________Activity #" + str(n + 1) + "__________")
-    trade_date = input("Trade Date (if any) mm/dd/yy: ")
-    settlement_date = input("* Settlement Date mm/dd/yy: ")
-    description = input("* Enter activity description (e.g., You Sold Transaction Profit: $3.25): ")
-    quantity = input("Enter Quantity (negative for sold): ")
-    price = input("Enter price: ")
-    cost = input("Enter cost (if any): ")
-    transaction_cost = input("Enter transaction cost (if any): ")
-    amount = input("* Enter amount (negative for buy): ")
-    # if ref. num. exists, fill in other values automatically
-    ref_num = input("Enter reference number (if any): ")
-    if ref_num != "":
-        type = "1*"
-        reg_rep = "E##"
-        order_num = input("Enter order number: ")
-    else:
-        type = ""
-        reg_rep = ""
-        order_num = ""
-
-    # while loop takes in fund/stock code data & adds known info accordingly
-    take_info = True
-    while take_info:
-        information_input = input("* Fund/Stock Code: ")
-        # determines if input matches known stock/mutual fund
-        if information_input == "SPAXX":
-            information_output = "Fidelity Government Money Market (SPAXX)"
-            if description != "Check Received":
-                symbol_cusip = "31617H102"
-            else:
-                symbol_cusip = ""
-            take_info = False
-        elif information_input == "FNCMX":
-            information_output = "Fidelity Nasdaq Composite Index Fund (FNCMX)"
-            take_info = False
-            symbol_cusip = "315912709"
-        elif information_input == "FBGRX":
-            information_output = "Fidelity Blue Chip Growth Fund (FBGRX)"
-            symbol_cusip = "316389303"
-            take_info = False
-        elif information_input == "FOCPX":
-            information_output = "Fidelity OTC Portfolio (FOCPX)"
-            symbol_cusip = "316389105"
-            take_info = False
-        elif information_input == "FNILX":
-            information_output = "Fidelity Zero Large Cap Index Fund (FNILX)"
-            symbol_cusip = "315911628"
-            take_info = False
-        elif information_input == "FLCEX":
-            information_output = "Fidelity Large Cap Core Enhanced Index Fund (FLCEX)"
-            symbol_cusip = "31606X100"
-            take_info = False
-        elif information_input == "FFGCX":
-            information_output = "Fidelity Global Commodity Stock Fund (FFGCX)"
-            symbol_cusip = "31618H606"
-            take_info = False
-
-    # add data to blank rows in excel
-    print("Filling in data...")
-    input_cell = "A" + str(blank_row + n)
-    Worksheet.range(input_cell).value = [trade_date, settlement_date, information_output, symbol_cusip, description, quantity, price, cost, transaction_cost, amount, ref_num, type, reg_rep, order_num]
+# instantiate Actv_Table class w/14 columns and a certain number of rows
+activity_table = Actv_Table(14, blank_row - 1)
+# run new activity method
+activity_table.new_activity()
 
 ################ UPDATE TABLE #########################
 # Find the date in spot V2 (last updated date)
