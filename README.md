@@ -12,7 +12,7 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 
 ### Dependencies
 
-* Requires Python installation. Version 3.10 recommended
+* Requires Python installation
 * Requires xlwings library and pywin32 library
 * Requires time & datetime libraries (generally pre-installed with Python installation)
 * Requires Excel files
@@ -21,7 +21,13 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
 
 ### Installing
 
-1. Install xlwings & pywin32
+1. Install xlwings & pywin32 libraries
+    ```
+    pip install xlwings
+    ```
+    ```
+    pip install pywin32
+    ```
 2. Download main.py, StockInfo.py, FidelityHoldingsProject.xlsm, and StockAndMutualFundInfo.xlsx files to the same folder
 3. Use FidelityHoldingsProject.xlsm and StockAndMutualFundInfo.xlsx as templates to adjust to your own criteria
 
