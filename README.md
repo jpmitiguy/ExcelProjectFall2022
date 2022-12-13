@@ -74,7 +74,7 @@ A python file that asks for recent stock/mutual fund activity, and updates an Ex
         ```
 
 ## Help
-
+* Ensure that you are working in a directory with all the files. If you are working in a subfolder, the modules may not import.
 * If program delays after printing "Refreshing data..." there may be no internet connection. It will continue to run after a short time.
 * If program still delays after printing "Refreshing data..." Excel may be unresponsive. If you've already followed the steps under "Before First Run of Program Above," try closing the excel file, killing the active python terminal, and running main.py again.
 * If program prints "Check for possible errors", there may not be up-to-date stock/mutual fund information
